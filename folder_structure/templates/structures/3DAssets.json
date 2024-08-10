@@ -1,0 +1,437 @@
+{
+    "collections": [
+        {
+            "category": "Vehicles",
+            "subcategories": [
+                {
+                    "subcategory": "Cars",
+                    "sub_subcategories": [
+                        "Sedans",
+                        "SUVs",
+                        "Trucks",
+                        "Sports Cars",
+                        "Electric Cars"
+                    ]
+                },
+                {
+                    "subcategory": "Aircraft",
+                    "sub_subcategories": [
+                        "Commercial Airplanes",
+                        "Private Jets",
+                        "Helicopters",
+                        "Drones"
+                    ]
+                },
+                {
+                    "subcategory": "Ships",
+                    "sub_subcategories": [
+                        "Yachts",
+                        "Cargo Ships",
+                        "Submarines",
+                        "Speedboats"
+                    ]
+                },
+                {
+                    "subcategory": "Military Vehicles",
+                    "sub_subcategories": [
+                        "Tanks",
+                        "Armored Vehicles",
+                        "Fighter Jets",
+                        "Naval Ships"
+                    ]
+                }
+            ]
+        },
+        {
+            "category": "Architecture",
+            "subcategories": [
+                {
+                    "subcategory": "Buildings",
+                    "sub_subcategories": [
+                        "Skyscrapers",
+                        "Residential",
+                        "Commercial",
+                        "Historical",
+                        "Industrial"
+                    ]
+                },
+                {
+                    "subcategory": "Interiors",
+                    "sub_subcategories": [
+                        "Living Rooms",
+                        "Kitchens",
+                        "Bedrooms",
+                        "Offices",
+                        "Bathrooms"
+                    ]
+                },
+                {
+                    "subcategory": "Landmarks",
+                    "sub_subcategories": [
+                        "Bridges",
+                        "Monuments",
+                        "Towers",
+                        "Cultural Landmarks"
+                    ]
+                },
+                {
+                    "subcategory": "Exteriors",
+                    "sub_subcategories": [
+                        "Facades",
+                        "Courtyards",
+                        "Gardens",
+                        "Parking Lots"
+                    ]
+                }
+            ]
+        },
+        {
+            "category": "Characters",
+            "subcategories": [
+                {
+                    "subcategory": "Humans",
+                    "sub_subcategories": [
+                        "Realistic",
+                        "Stylized",
+                        "Historical",
+                        "Fantasy",
+                        "Anatomical"
+                    ]
+                },
+                {
+                    "subcategory": "Animals",
+                    "sub_subcategories": [
+                        "Mammals",
+                        "Birds",
+                        "Reptiles",
+                        "Aquatic Creatures",
+                        "Mythical Creatures"
+                    ]
+                },
+                {
+                    "subcategory": "Robots",
+                    "sub_subcategories": [
+                        "Humanoid",
+                        "Industrial",
+                        "Military",
+                        "Futuristic",
+                        "Medical"
+                    ]
+                },
+                {
+                    "subcategory": "Creatures",
+                    "sub_subcategories": [
+                        "Aliens",
+                        "Monsters",
+                        "Demons",
+                        "Fantasy Creatures"
+                    ]
+                }
+            ]
+        },
+        {
+            "category": "Weapons",
+            "subcategories": [
+                {
+                    "subcategory": "Guns",
+                    "sub_subcategories": [
+                        "Pistols",
+                        "Rifles",
+                        "Shotguns",
+                        "Machine Guns",
+                        "Sci-Fi Guns"
+                    ]
+                },
+                {
+                    "subcategory": "Melee Weapons",
+                    "sub_subcategories": [
+                        "Swords",
+                        "Knives",
+                        "Axes",
+                        "Spears",
+                        "Fantasy Weapons"
+                    ]
+                },
+                {
+                    "subcategory": "Explosives",
+                    "sub_subcategories": [
+                        "Grenades",
+                        "Bombs",
+                        "Mines",
+                        "Missiles"
+                    ]
+                },
+                {
+                    "subcategory": "Armor",
+                    "sub_subcategories": [
+                        "Body Armor",
+                        "Helmets",
+                        "Shields",
+                        "Fantasy Armor"
+                    ]
+                }
+            ]
+        },
+        {
+            "category": "Nature",
+            "subcategories": [
+                {
+                    "subcategory": "Trees",
+                    "sub_subcategories": [
+                        "Coniferous",
+                        "Deciduous",
+                        "Tropical",
+                        "Dead Trees",
+                        "Fantasy Trees"
+                    ]
+                },
+                {
+                    "subcategory": "Rocks",
+                    "sub_subcategories": [
+                        "Boulders",
+                        "Cliffs",
+                        "Pebbles",
+                        "Rock Formations"
+                    ]
+                },
+                {
+                    "subcategory": "Water",
+                    "sub_subcategories": [
+                        "Oceans",
+                        "Lakes",
+                        "Rivers",
+                        "Waterfalls"
+                    ]
+                },
+                {
+                    "subcategory": "Plants",
+                    "sub_subcategories": [
+                        "Flowers",
+                        "Bushes",
+                        "Grass",
+                        "Aquatic Plants"
+                    ]
+                }
+            ]
+        },
+        {
+            "category": "Furniture",
+            "subcategories": [
+                {
+                    "subcategory": "Living Room",
+                    "sub_subcategories": [
+                        "Sofas",
+                        "Coffee Tables",
+                        "TV Stands",
+                        "Bookshelves"
+                    ]
+                },
+                {
+                    "subcategory": "Bedroom",
+                    "sub_subcategories": [
+                        "Beds",
+                        "Wardrobes",
+                        "Nightstands",
+                        "Dressers"
+                    ]
+                },
+                {
+                    "subcategory": "Office",
+                    "sub_subcategories": [
+                        "Desks",
+                        "Office Chairs",
+                        "Filing Cabinets",
+                        "Bookcases"
+                    ]
+                },
+                {
+                    "subcategory": "Outdoor",
+                    "sub_subcategories": [
+                        "Patio Furniture",
+                        "Benches",
+                        "Garden Chairs",
+                        "Outdoor Tables"
+                    ]
+                }
+            ]
+        },
+        {
+            "category": "Electronics",
+            "subcategories": [
+                {
+                    "subcategory": "Computers",
+                    "sub_subcategories": [
+                        "Laptops",
+                        "Desktops",
+                        "Monitors",
+                        "Keyboards"
+                    ]
+                },
+                {
+                    "subcategory": "Mobile Devices",
+                    "sub_subcategories": [
+                        "Smartphones",
+                        "Tablets",
+                        "Smartwatches",
+                        "E-Readers"
+                    ]
+                },
+                {
+                    "subcategory": "Home Appliances",
+                    "sub_subcategories": [
+                        "Refrigerators",
+                        "Washing Machines",
+                        "Microwaves",
+                        "Vacuum Cleaners"
+                    ]
+                },
+                {
+                    "subcategory": "Entertainment",
+                    "sub_subcategories": [
+                        "TVs",
+                        "Speakers",
+                        "Gaming Consoles",
+                        "Projectors"
+                    ]
+                }
+            ]
+        },
+        {
+            "category": "Industrial",
+            "subcategories": [
+                {
+                    "subcategory": "Machines",
+                    "sub_subcategories": [
+                        "Construction Equipment",
+                        "Factory Machines",
+                        "Engines",
+                        "Tools"
+                    ]
+                },
+                {
+                    "subcategory": "Pipes & Tubes",
+                    "sub_subcategories": [
+                        "PVC Pipes",
+                        "Steel Tubes",
+                        "Industrial Pipelines",
+                        "Conduits"
+                    ]
+                },
+                {
+                    "subcategory": "Structures",
+                    "sub_subcategories": [
+                        "Bridges",
+                        "Cranes",
+                        "Warehouses",
+                        "Factories"
+                    ]
+                }
+            ]
+        },
+        {
+            "category": "Sci-Fi & Fantasy",
+            "subcategories": [
+                {
+                    "subcategory": "Spaceships",
+                    "sub_subcategories": [
+                        "Battlecruisers",
+                        "Fighters",
+                        "Shuttles",
+                        "Stationary"
+                    ]
+                },
+                {
+                    "subcategory": "Futuristic Buildings",
+                    "sub_subcategories": [
+                        "Space Stations",
+                        "Alien Structures",
+                        "Cyberpunk",
+                        "Utopian"
+                    ]
+                },
+                {
+                    "subcategory": "Fantasy Creatures",
+                    "sub_subcategories": [
+                        "Dragons",
+                        "Elves",
+                        "Orcs",
+                        "Goblins"
+                    ]
+                }
+            ]
+        },
+        {
+            "category": "Clothing & Accessories",
+            "subcategories": [
+                {
+                    "subcategory": "Casual Wear",
+                    "sub_subcategories": [
+                        "T-Shirts",
+                        "Jeans",
+                        "Jackets",
+                        "Shoes"
+                    ]
+                },
+                {
+                    "subcategory": "Formal Wear",
+                    "sub_subcategories": [
+                        "Suits",
+                        "Dresses",
+                        "Dress Shoes",
+                        "Ties"
+                    ]
+                },
+                {
+                    "subcategory": "Accessories",
+                    "sub_subcategories": [
+                        "Hats",
+                        "Glasses",
+                        "Bags",
+                        "Watches"
+                    ]
+                },
+                {
+                    "subcategory": "Costumes",
+                    "sub_subcategories": [
+                        "Historical",
+                        "Fantasy",
+                        "Sci-Fi",
+                        "Halloween"
+                    ]
+                }
+            ]
+        },
+        {
+            "category": "Sports & Recreation",
+            "subcategories": [
+                {
+                    "subcategory": "Sports Equipment",
+                    "sub_subcategories": [
+                        "Balls",
+                        "Bats",
+                        "Rackets",
+                        "Gloves"
+                    ]
+                },
+                {
+                    "subcategory": "Outdoor Activities",
+                    "sub_subcategories": [
+                        "Camping Gear",
+                        "Hiking",
+                        "Fishing",
+                        "Cycling"
+                    ]
+                },
+                {
+                    "subcategory": "Fitness",
+                    "sub_subcategories": [
+                        "Weights",
+                        "Treadmills",
+                        "Yoga Mats",
+                        "Fitness Machines"
+                    ]
+                }
+            ]
+        }
+    ]
+}

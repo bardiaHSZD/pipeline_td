@@ -1,0 +1,21 @@
+{
+    "department": "",             // The department owns/created the asset, such as "mod"
+    "asset": {
+        "alias": "",              // The alias name for the asset, such as "HP01"
+        "category": "",           // You can specify the category, such as "Environment", "Character", "Prop", etc.
+        "type": "",               // Specify the type: "2D Asset", "3D Asset", "VFX Asset"
+        "format": ""              // File format: "jpg", "png", "obj", "fbx", "ma", "used", etc.
+    },
+    "version": "",                // Sample: "v0001"
+    "status": "",                 // Status of the asset: "WIP", "Final", "Approved", etc.
+    "locations": {
+        "global": ""              // The full path on server, such as "C:\\Users\\bar\\3DAssets\\Tree\\Tree_Layout_v0001.ma"
+    },
+    "user": {
+        "name": "",               // The name of the person who put/updated/modified the asset
+        "username": ""            // The username of the person who put/updated/modified the asset
+    },
+    "comment": "",
+    "tags": [],                   // Tags for easier search and filtering, such as ["pine", "tree", "3D"]
+    "timestamp":""                // Timestamp of the creation or last modification, such as "2024-08-10T12:34:56Z"
+}

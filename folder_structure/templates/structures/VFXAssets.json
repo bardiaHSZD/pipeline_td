@@ -1,0 +1,160 @@
+{
+    "collections": [
+        {
+            "category": "Animals",
+            "subcategories": [
+                "Wild Animals",
+                "Domestic Animals",
+                "Fantasy Creatures"
+            ]
+        },
+        {
+            "category": "Atmosphere",
+            "subcategories": [
+                "Floating Particles",
+                "Fog & Mist"
+            ]
+        },
+        {
+            "category": "Blood & Gore",
+            "subcategories": [
+                "Blood Splatter",
+                "Bleeding Wounds",
+                "Severed Necks & Limbs"
+            ]
+        },
+        {
+            "category": "Debris & Impact",
+            "subcategories": [
+                "Falling Debris",
+                "Small Burning Debris",
+                "Falling Dust",
+                "Explosion Debris"
+            ]
+        },
+        {
+            "category": "Energy & Magic",
+            "subcategories": [
+                "Magic Spells",
+                "Energy Blasts",
+                "Mystical Auras"
+            ]
+        },
+        {
+            "category": "Explosions",
+            "subcategories": [
+                "Oil & Fuel Explosions",
+                "Dust Explosion Close-Ups"
+            ]
+        },
+        {
+            "category": "Fire",
+            "subcategories": [
+                "Large Scale Fire",
+                "Flamethrower Effects",
+                "Fire Sparks",
+                "Molten Lava"
+            ]
+        },
+        {
+            "category": "Glass",
+            "subcategories": [
+                "Broken Glass",
+                "Shattered Glass"
+            ]
+        },
+        {
+            "category": "Guns & Weapons",
+            "subcategories": [
+                "Muzzle Flashes",
+                "Bullet Hits",
+                "Gun Muzzles"
+            ]
+        },
+        {
+            "category": "Miscellaneous",
+            "subcategories": [
+                "Spider Webs",
+                "Urban Debris",
+                "Toxic Waste"
+            ]
+        },
+        {
+            "category": "Optics",
+            "subcategories": [
+                "Light Rays",
+                "Flash Effects",
+                "Lens Flares"
+            ]
+        },
+        {
+            "category": "People & Crowds",
+            "subcategories": [
+                "Crowd Scenes",
+                "Character Animations"
+            ]
+        },
+        {
+            "category": "Plants & Trees",
+            "subcategories": [
+                "Assorted Trees",
+                "Plants & Foliage"
+            ]
+        },
+        {
+            "category": "Smoke & Fog",
+            "subcategories": [
+                "Smoke Plumes",
+                "Cigarette Smoke",
+                "Atmospheric Smoke & Fog"
+            ]
+        },
+        {
+            "category": "Sound FX",
+            "subcategories": []
+        },
+        {
+            "category": "Space",
+            "subcategories": [
+                "Meteors",
+                "Galaxy Backgrounds",
+                "Nebulae"
+            ]
+        },
+        {
+            "category": "Sparks",
+            "subcategories": [
+                "Spark Hits"
+            ]
+        },
+        {
+            "category": "Textures",
+            "subcategories": []
+        },
+        {
+            "category": "Variety Packs",
+            "subcategories": []
+        },
+        {
+            "category": "Water",
+            "subcategories": [
+                "Water Splashes",
+                "Dripping Water",
+                "Water Ripples",
+                "Water Explosions",
+                "Flood Effects"
+            ]
+        },
+        {
+            "category": "Weather",
+            "subcategories": [
+                "Windy Snow",
+                "Cold Breath",
+                "Blizzards",
+                "Snowfalls",
+                "Hailstorms",
+                "Sandstorms"
+            ]
+        }
+    ]
+}

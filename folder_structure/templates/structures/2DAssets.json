@@ -1,0 +1,436 @@
+{
+    "collections": [
+        {
+            "category": "Nature",
+            "subcategories": [
+                {
+                    "subcategory": "Landscapes",
+                    "sub_subcategories": [
+                        "Mountains",
+                        "Deserts",
+                        "Beaches",
+                        "Forests",
+                        "Rivers",
+                        "Waterfalls"
+                    ]
+                },
+                {
+                    "subcategory": "Wildlife",
+                    "sub_subcategories": [
+                        "Mammals",
+                        "Birds",
+                        "Marine Life",
+                        "Insects",
+                        "Reptiles",
+                        "Amphibians"
+                    ]
+                },
+                {
+                    "subcategory": "Underwater",
+                    "sub_subcategories": [
+                        "Coral Reefs",
+                        "Marine Life",
+                        "Underwater Caves",
+                        "Shipwrecks",
+                        "Seascapes"
+                    ]
+                },
+                {
+                    "subcategory": "Forests",
+                    "sub_subcategories": [
+                        "Rainforests",
+                        "Boreal Forests",
+                        "Deciduous Forests",
+                        "Woodlands",
+                        "Jungles"
+                    ]
+                },
+                {
+                    "subcategory": "Mountains",
+                    "sub_subcategories": [
+                        "Snow-Capped Mountains",
+                        "Rocky Mountains",
+                        "Volcanoes",
+                        "Mountain Ranges",
+                        "Alpine Landscapes"
+                    ]
+                }
+            ]
+        },
+        {
+            "category": "People",
+            "subcategories": [
+                {
+                    "subcategory": "Business",
+                    "sub_subcategories": [
+                        "Meetings",
+                        "Office Life",
+                        "Entrepreneurship",
+                        "Corporate",
+                        "Networking"
+                    ]
+                },
+                {
+                    "subcategory": "Family",
+                    "sub_subcategories": [
+                        "Parenting",
+                        "Children",
+                        "Family Gatherings",
+                        "Home Life",
+                        "Elderly"
+                    ]
+                },
+                {
+                    "subcategory": "Education",
+                    "sub_subcategories": [
+                        "Schools",
+                        "Universities",
+                        "Online Learning",
+                        "Classrooms",
+                        "Teachers and Students"
+                    ]
+                },
+                {
+                    "subcategory": "Healthcare",
+                    "sub_subcategories": [
+                        "Hospitals",
+                        "Doctors",
+                        "Nurses",
+                        "Patient Care",
+                        "Medical Equipment"
+                    ]
+                },
+                {
+                    "subcategory": "Sports",
+                    "sub_subcategories": [
+                        "Team Sports",
+                        "Individual Sports",
+                        "Fitness",
+                        "Outdoor Sports",
+                        "Extreme Sports"
+                    ]
+                },
+                {
+                    "subcategory": "Fashion",
+                    "sub_subcategories": [
+                        "Runways",
+                        "Street Fashion",
+                        "Fashion Designers",
+                        "Models",
+                        "Clothing and Accessories"
+                    ]
+                }
+            ]
+        },
+        {
+            "category": "Technology",
+            "subcategories": [
+                {
+                    "subcategory": "Computers",
+                    "sub_subcategories": [
+                        "Laptops",
+                        "Desktops",
+                        "Coding",
+                        "Software Development",
+                        "Data Centers"
+                    ]
+                },
+                {
+                    "subcategory": "Smartphones",
+                    "sub_subcategories": [
+                        "Apps",
+                        "Mobile Communication",
+                        "Mobile Payments",
+                        "Photography",
+                        "Social Media"
+                    ]
+                },
+                {
+                    "subcategory": "Gadgets",
+                    "sub_subcategories": [
+                        "Wearables",
+                        "Tablets",
+                        "Smart Home Devices",
+                        "Gaming Consoles",
+                        "Drones"
+                    ]
+                },
+                {
+                    "subcategory": "AI & Robotics",
+                    "sub_subcategories": [
+                        "Humanoid Robots",
+                        "Automation",
+                        "Machine Learning",
+                        "AI Assistants",
+                        "Industrial Robots"
+                    ]
+                },
+                {
+                    "subcategory": "Virtual Reality",
+                    "sub_subcategories": [
+                        "VR Headsets",
+                        "Immersive Experiences",
+                        "Augmented Reality",
+                        "VR Gaming",
+                        "3D Visualization"
+                    ]
+                }
+            ]
+        },
+        {
+            "category": "Business & Finance",
+            "subcategories": [
+                {
+                    "subcategory": "Meetings",
+                    "sub_subcategories": [
+                        "Board Meetings",
+                        "Conferences",
+                        "Brainstorming Sessions",
+                        "Presentations",
+                        "Team Collaborations"
+                    ]
+                },
+                {
+                    "subcategory": "Success & Achievement",
+                    "sub_subcategories": [
+                        "Awards",
+                        "Milestones",
+                        "Promotions",
+                        "Leadership",
+                        "Entrepreneurship"
+                    ]
+                },
+                {
+                    "subcategory": "Stock Markets",
+                    "sub_subcategories": [
+                        "Trading Floors",
+                        "Graphs and Charts",
+                        "Stock Exchanges",
+                        "Investment Portfolios",
+                        "Market Analysis"
+                    ]
+                },
+                {
+                    "subcategory": "Finance",
+                    "sub_subcategories": [
+                        "Banking",
+                        "Investments",
+                        "Cryptocurrency",
+                        "Loans and Mortgages",
+                        "Wealth Management"
+                    ]
+                },
+                {
+                    "subcategory": "Economics",
+                    "sub_subcategories": [
+                        "Global Markets",
+                        "Economic Indicators",
+                        "Economic Policies",
+                        "Trade and Commerce",
+                        "Financial Forecasting"
+                    ]
+                }
+            ]
+        },
+        {
+            "category": "Transportation",
+            "subcategories": [
+                {
+                    "subcategory": "Cars",
+                    "sub_subcategories": [
+                        "Luxury Cars",
+                        "Electric Cars",
+                        "Vintage Cars",
+                        "Racing",
+                        "Car Interiors"
+                    ]
+                },
+                {
+                    "subcategory": "Planes",
+                    "sub_subcategories": [
+                        "Commercial Flights",
+                        "Private Jets",
+                        "Airports",
+                        "Cargo Planes",
+                        "Helicopters"
+                    ]
+                },
+                {
+                    "subcategory": "Trains",
+                    "sub_subcategories": [
+                        "High-Speed Trains",
+                        "Freight Trains",
+                        "Subways",
+                        "Historic Trains",
+                        "Train Stations"
+                    ]
+                },
+                {
+                    "subcategory": "Bicycles",
+                    "sub_subcategories": [
+                        "Mountain Biking",
+                        "City Biking",
+                        "Cycling Gear",
+                        "Bicycle Touring",
+                        "Bike Lanes"
+                    ]
+                },
+                {
+                    "subcategory": "Ships & Boats",
+                    "sub_subcategories": [
+                        "Yachts",
+                        "Fishing Boats",
+                        "Cruise Ships",
+                        "Cargo Ships",
+                        "Sailboats"
+                    ]
+                }
+            ]
+        },
+        {
+            "category": "Health & Wellness",
+            "subcategories": [
+                {
+                    "subcategory": "Fitness",
+                    "sub_subcategories": [
+                        "Yoga",
+                        "Cardio",
+                        "Strength Training",
+                        "Group Exercise",
+                        "Outdoor Workouts"
+                    ]
+                },
+                {
+                    "subcategory": "Nutrition",
+                    "sub_subcategories": [
+                        "Healthy Eating",
+                        "Dietary Supplements",
+                        "Meal Prep",
+                        "Vegan and Vegetarian",
+                        "Superfoods"
+                    ]
+                },
+                {
+                    "subcategory": "Mental Health",
+                    "sub_subcategories": [
+                        "Mindfulness",
+                        "Therapy",
+                        "Stress Relief",
+                        "Mental Health Awareness",
+                        "Meditation"
+                    ]
+                },
+                {
+                    "subcategory": "Medical",
+                    "sub_subcategories": [
+                        "Hospitals",
+                        "Surgery",
+                        "Diagnostics",
+                        "Emergency Care",
+                        "Pharmaceuticals"
+                    ]
+                },
+                {
+                    "subcategory": "Healthcare",
+                    "sub_subcategories": [
+                        "Nursing",
+                        "Doctor-Patient Interaction",
+                        "Medical Equipment",
+                        "Public Health",
+                        "Healthcare Workers"
+                    ]
+                }
+            ]
+        },
+        {
+            "category": "Entertainment",
+            "subcategories": [
+                {
+                    "subcategory": "Music",
+                    "sub_subcategories": [
+                        "Concerts",
+                        "Musical Instruments",
+                        "Bands",
+                        "Singers",
+                        "Music Festivals"
+                    ]
+                },
+                {
+                    "subcategory": "Movies",
+                    "sub_subcategories": [
+                        "Movie Scenes",
+                        "Actors",
+                        "Directors",
+                        "Film Production",
+                        "Red Carpet Events"
+                    ]
+                },
+                {
+                    "subcategory": "Games",
+                    "sub_subcategories": [
+                        "Video Games",
+                        "Board Games",
+                        "Esports",
+                        "Game Development",
+                        "Arcade Games"
+                    ]
+                },
+                {
+                    "subcategory": "Performing Arts",
+                    "sub_subcategories": [
+                        "Theater",
+                        "Dance",
+                        "Opera",
+                        "Circus",
+                        "Stand-Up Comedy"
+                    ]
+                },
+                {
+                    "subcategory": "Festivals",
+                    "sub_subcategories": [
+                        "Music Festivals",
+                        "Cultural Festivals",
+                        "Food Festivals",
+                        "Film Festivals",
+                        "Art Festivals"
+                    ]
+                }
+            ]
+        },
+        {
+            "category": "Food & Drink",
+            "subcategories": [
+                {
+                    "subcategory": "Culinary Arts",
+                    "sub_subcategories": [
+                        "Cooking",
+                        "Baking",
+                        "Gourmet Food",
+                        "Street Food",
+                        "Food Plating"
+                    ]
+                },
+                {
+                    "subcategory": "Beverages",
+                    "sub_subcategories": [
+                        "Coffee",
+                        "Tea",
+                        "Cocktails",
+                        "Juices",
+                        "Wine and Beer"
+                    ]
+                },
+                {
+                    "subcategory": "Restaurants",
+                    "sub_subcategories": [
+                        "Fine Dining",
+                        "Casual Dining",
+                        "Street Food Vendors",
+                        "Cafes",
+                        "Food Trucks"
+                    ]
+                }
+            ]
+        }
+    ]
+}
