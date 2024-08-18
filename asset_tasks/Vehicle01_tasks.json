@@ -1,6 +1,0 @@
-{
-    "rig": ["RiggingTask01", "RiggingTask02"],
-    "cpt": ["CaptureTask01", "CaptureTask02"],
-    "mod": ["ModelingTask01", "ModelingTask02"],
-    "surf": ["SurfacingTask01", "SurfacingTask02"]
-}
