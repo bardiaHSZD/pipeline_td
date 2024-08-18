@@ -1,5 +1,7 @@
 import os
 import json
+import pandas as pd
+import sys
 
 # Load JSON data
 def load_json_data(json_file):
@@ -7,7 +9,49 @@ def load_json_data(json_file):
         data = json.load(file)
     return data
 
-# Create structure for each entity based on its specific task JSON data
+# Load data from Excel
+def load_excel_data(excel_file):
+    project_data = {}
+    
+    # Load the ProjectInfo sheet
+    project_info = pd.read_excel(excel_file, sheet_name='ProjectInfo')
+    project_name = project_info['project_name'].iloc[0]
+    project_data['project_name'] = project_name
+
+    # Load the Entities sheet
+    entities = pd.read_excel(excel_file, sheet_name='Entities')
+    entity_dict = {}
+    for entity in entities['entity_name'].unique():
+        entity_tasks = entities[entities['entity_name'] == entity]
+        entity_dict[entity] = {}
+        for _, row in entity_tasks.iterrows():
+            department = row['department']
+            task = row['task']
+            if department not in entity_dict[entity]:
+                entity_dict[entity][department] = []
+            entity_dict[entity][department].append(task)
+    project_data['entities'] = entity_dict
+
+    # Load the Sequences sheet
+    sequences = pd.read_excel(excel_file, sheet_name='Sequences')
+    sequence_dict = {}
+    for sequence in sequences['sequence_name'].unique():
+        sequence_dict[sequence] = {'shots': {}}
+        sequence_shots = sequences[sequences['sequence_name'] == sequence]
+        for shot in sequence_shots['shot_name'].unique():
+            sequence_dict[sequence]['shots'][shot] = {}
+            shot_tasks = sequence_shots[sequence_shots['shot_name'] == shot]
+            for _, row in shot_tasks.iterrows():
+                department = row['department']
+                task = row['task']
+                if department not in sequence_dict[sequence]['shots'][shot]:
+                    sequence_dict[sequence]['shots'][shot][department] = []
+                sequence_dict[sequence]['shots'][shot][department].append(task)
+    project_data['sequences'] = sequence_dict
+
+    return project_data
+
+# Create structure for each entity based on its specific task data
 def create_entity_structure(entity_name, asset_tasks):
     return {
         "Exports": {},
@@ -20,7 +64,7 @@ def create_entity_structure(entity_name, asset_tasks):
         }
     }
 
-# Create structure for each shot based on its specific task JSON data
+# Create structure for each shot based on its specific task data
 def create_shot_structure(shot_tasks):
     return {
         "Exports": {},
@@ -33,13 +77,12 @@ def create_shot_structure(shot_tasks):
         }
     }
 
-# Define the folder structure based on the JSON data
+# Define the folder structure based on the data
 def create_folder_structure(project_data):
     project_name = project_data['project_name']
     entities = project_data.get('entities', {})
     sequences = project_data.get('sequences', {})
 
-    # Define the base folder structure
     folder_structure = {
         project_name: {
             "Production": {
@@ -74,24 +117,20 @@ def create_folders(structure, base_path=""):
 
 # Main function
 def main():
-    # Check if the combined file is available
-    combined_json_file = 'combined_project_structure.json'
-    if os.path.exists(combined_json_file):
-        project_data = load_json_data(combined_json_file)
+    if len(sys.argv) < 3:
+        print("Usage: python app.py [json|excel] [file_path]")
+        return
+    
+    option = sys.argv[1].lower()
+    file_path = sys.argv[2]
+
+    if option == "json":
+        project_data = load_json_data(file_path)
+    elif option == "excel":
+        project_data = load_excel_data(file_path)
     else:
-        # Load the project structure from the separate JSON files
-        project_json_file = 'sequences_shots.json'
-        project_data = load_json_data(project_json_file)
-
-        # Load individual asset and shot task files
-        for entity in project_data['entities']:
-            asset_tasks_file = f'asset_tasks/{entity}_tasks.json'
-            project_data['entities'][entity] = load_json_data(asset_tasks_file)
-
-        for sequence in project_data['sequences']:
-            for shot in project_data['sequences'][sequence]:
-                shot_tasks_file = f'shot_tasks/{sequence}/{shot}_tasks.json'
-                project_data['sequences'][sequence]['shots'][shot] = load_json_data(shot_tasks_file)
+        print("Invalid option. Use 'json' or 'excel'.")
+        return
 
     # Create the folder structure
     folder_structure = create_folder_structure(project_data)
@@ -102,3 +141,4 @@ def main():
 # Run the script
 if __name__ == "__main__":
     main()
+
