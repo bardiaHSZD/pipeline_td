@@ -1,7 +1,8 @@
 import os
 import json
 import pandas as pd
-import sys
+import tkinter as tk
+from tkinter import filedialog, messagebox
 
 # Load JSON data
 def load_json_data(json_file):
@@ -115,30 +116,73 @@ def create_folders(structure, base_path=""):
         if isinstance(value, dict):
             create_folders(value, full_path)
 
-# Main function
-def main():
-    if len(sys.argv) < 3:
-        print("Usage: python app.py [json|excel] [file_path]")
-        return
+# Function to handle file browsing
+def browse_file():
+    if var.get() == "json":
+        file_path = filedialog.askopenfilename(filetypes=[("JSON files", "*.json")])
+    elif var.get() == "excel":
+        file_path = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx")])
+    else:
+        file_path = ""
     
-    option = sys.argv[1].lower()
-    file_path = sys.argv[2]
+    if file_path:
+        entry_file_path.delete(0, tk.END)
+        entry_file_path.insert(0, file_path)
 
-    if option == "json":
+# Function to apply the file choice and create the structure
+def apply_selection():
+    file_path = entry_file_path.get()
+    if not file_path:
+        messagebox.showerror("Error", "No file selected")
+        return
+
+    if var.get() == "json":
         project_data = load_json_data(file_path)
-    elif option == "excel":
+    elif var.get() == "excel":
         project_data = load_excel_data(file_path)
     else:
-        print("Invalid option. Use 'json' or 'excel'.")
+        messagebox.showerror("Error", "Invalid selection")
         return
 
-    # Create the folder structure
     folder_structure = create_folder_structure(project_data)
-
-    # Create the folders
     create_folders(folder_structure)
 
-# Run the script
-if __name__ == "__main__":
-    main()
+    messagebox.showinfo("Success", "Folder structure created successfully")
 
+# Function for the About dialog
+def show_about():
+    messagebox.showinfo("About", "Copyright 2024")
+
+# Setting up the GUI
+root = tk.Tk()
+root.title("Project Structure Generator")
+root.geometry("400x220")  # Fixed window size
+root.resizable(False, False)  # Disable resizing
+
+# Menu bar with Help -> About
+menu_bar = tk.Menu(root)
+help_menu = tk.Menu(menu_bar, tearoff=0)
+help_menu.add_command(label="About", command=show_about)
+menu_bar.add_cascade(label="Help", menu=help_menu)
+root.config(menu=menu_bar)
+
+var = tk.StringVar(value="json")
+
+tk.Label(root, text="Select the input file type:").pack(pady=10)
+
+# Radio buttons for file selection
+tk.Radiobutton(root, text="JSON File", variable=var, value="json").pack(anchor=tk.W, padx=20)
+tk.Radiobutton(root, text="Excel File", variable=var, value="excel").pack(anchor=tk.W, padx=20)
+
+# Entry for file path
+entry_file_path = tk.Entry(root, width=50)
+entry_file_path.pack(pady=10)
+
+# Browse button
+tk.Button(root, text="Browse", command=browse_file).pack(pady=5)
+
+# Apply button
+tk.Button(root, text="Apply", command=apply_selection).pack(pady=10)
+
+# Run the GUI event loop
+root.mainloop()
