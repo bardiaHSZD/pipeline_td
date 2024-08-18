@@ -1,0 +1,8 @@
+{
+    "project_name": "MyProject",
+    "entities": ["Character01", "Prop01", "Vehicle01"],
+    "sequences": {
+        "sequence_01": ["shot_01", "shot_02", "shot_03"],
+        "sequence_02": ["shot_01", "shot_02", "shot_03"]
+    }
+}

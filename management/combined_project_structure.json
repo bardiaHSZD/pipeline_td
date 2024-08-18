@@ -1,0 +1,81 @@
+{
+    "project_name": "MyProject",
+    "entities": {
+        "Character01": {
+            "mod": ["ModelingTask01", "ModelingTask02"],
+            "surf": ["SurfacingTask01", "SurfacingTask02"],
+            "rig": ["RiggingTask01", "RiggingTask02"],
+            "cpt": ["CaptureTask01", "CaptureTask02"]
+        },
+        "Prop01": {
+            "mod": ["ModelingTask01", "ModelingTask02"],
+            "surf": ["SurfacingTask01", "SurfacingTask02"],
+            "rig": ["RiggingTask01", "RiggingTask02"],
+            "cpt": ["CaptureTask01", "CaptureTask02"]
+        },
+        "Vehicle01": {
+            "mod": ["ModelingTask01", "ModelingTask02"],
+            "surf": ["SurfacingTask01", "SurfacingTask02"],
+            "rig": ["RiggingTask01", "RiggingTask02"],
+            "cpt": ["CaptureTask01", "CaptureTask02"]
+        }
+    },
+    "sequences": {
+        "sequence_01": {
+            "shots": {
+                "shot_01": {
+                    "anm": ["AnimationTask01", "AnimationTask02"],
+                    "cfx": ["CharacterFXTask01", "CharacterFXTask02"],
+                    "cmp": ["CompositingTask01", "CompositingTask02"],
+                    "fx": ["FXTask01", "FXTask02"],
+                    "lay": ["LayoutTask01", "LayoutTask02"],
+                    "lgt": ["LightingTask01", "LightingTask02"]
+                },
+                "shot_02": {
+                    "anm": ["AnimationTask01", "AnimationTask02"],
+                    "cfx": ["CharacterFXTask01", "CharacterFXTask02"],
+                    "cmp": ["CompositingTask01", "CompositingTask02"],
+                    "fx": ["FXTask01", "FXTask02"],
+                    "lay": ["LayoutTask01", "LayoutTask02"],
+                    "lgt": ["LightingTask01", "LightingTask02"]
+                },
+                "shot_03": {
+                    "anm": ["AnimationTask01", "AnimationTask02"],
+                    "cfx": ["CharacterFXTask01", "CharacterFXTask02"],
+                    "cmp": ["CompositingTask01", "CompositingTask02"],
+                    "fx": ["FXTask01", "FXTask02"],
+                    "lay": ["LayoutTask01", "LayoutTask02"],
+                    "lgt": ["LightingTask01", "LightingTask02"]
+                }
+            }
+        },
+        "sequence_02": {
+            "shots": {
+                "shot_01": {
+                    "anm": ["AnimationTask01", "AnimationTask02"],
+                    "cfx": ["CharacterFXTask01", "CharacterFXTask02"],
+                    "cmp": ["CompositingTask01", "CompositingTask02"],
+                    "fx": ["FXTask01", "FXTask02"],
+                    "lay": ["LayoutTask01", "LayoutTask02"],
+                    "lgt": ["LightingTask01", "LightingTask02"]
+                },
+                "shot_02": {
+                    "anm": ["AnimationTask01", "AnimationTask02"],
+                    "cfx": ["CharacterFXTask01", "CharacterFXTask02"],
+                    "cmp": ["CompositingTask01", "CompositingTask02"],
+                    "fx": ["FXTask01", "FXTask02"],
+                    "lay": ["LayoutTask01", "LayoutTask02"],
+                    "lgt": ["LightingTask01", "LightingTask02"]
+                },
+                "shot_03": {
+                    "anm": ["AnimationTask01", "AnimationTask02"],
+                    "cfx": ["CharacterFXTask01", "CharacterFXTask02"],
+                    "cmp": ["CompositingTask01", "CompositingTask02"],
+                    "fx": ["FXTask01", "FXTask02"],
+                    "lay": ["LayoutTask01", "LayoutTask02"],
+                    "lgt": ["LightingTask01", "LightingTask02"]
+                }
+            }
+        }
+    }
+}

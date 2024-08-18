@@ -1,0 +1,8 @@
+{
+    "anm": ["AnimationTask01", "AnimationTask02"],
+    "cfx": ["CharacterFXTask01", "CharacterFXTask02"],
+    "cmp": ["CompositingTask01", "CompositingTask02"],
+    "fx": ["FXTask01", "FXTask02"],
+    "lay": ["LayoutTask01", "LayoutTask02"],
+    "lgt": ["LightingTask01", "LightingTask02"]
+}
