@@ -1,19 +1,20 @@
 import os
 import shutil
-import json  # Import the json module
+import json
 import tkinter as tk
 from tkinter import filedialog, messagebox
 
 # Global variables to track the window instances
 create_pipeline_window = None
-import_shots_window = None
+register_shots_window = None
+browse_window_open = False  # Variable to check if a browse window is already open
 
 def open_create_pipeline_window(root):
     global create_pipeline_window
     if create_pipeline_window is None or not tk.Toplevel.winfo_exists(create_pipeline_window):
         create_pipeline_window = tk.Toplevel(root)
         create_pipeline_window.title("Create Pipeline")
-        create_pipeline_window.geometry("500x150")
+        create_pipeline_window.geometry("500x100")
         create_pipeline_window.resizable(False, False)  # Disable window resizing
         create_pipeline_window.transient(root)  # Make the window transient to the main app window
         create_pipeline_window.attributes("-topmost", True)  # Ensure it's always on top
@@ -27,7 +28,7 @@ def open_create_pipeline_window(root):
         project_directory_entry = tk.Entry(project_directory_frame, width=40)
         project_directory_entry.pack(side='left', padx=5)
         browse_button_project = tk.Button(project_directory_frame, text="Browse", 
-                                          command=lambda: browse_project_directory(project_directory_entry))
+                                          command=lambda: browse_project_directory(project_directory_entry, root))
         browse_button_project.pack(side='left', padx=5)
 
         # Create the Generate Pipeline button
@@ -39,48 +40,42 @@ def open_create_pipeline_window(root):
     else:
         create_pipeline_window.lift()  # Bring the window to the top
 
-def open_import_shots_window(root):
-    global import_shots_window
-    if import_shots_window is None or not tk.Toplevel.winfo_exists(import_shots_window):
-        import_shots_window = tk.Toplevel(root)
-        import_shots_window.title("Import Shots")
-        import_shots_window.geometry("500x200")
-        import_shots_window.resizable(False, False)  # Disable window resizing
-        import_shots_window.transient(root)  # Make the window transient to the main app window
-        import_shots_window.attributes("-topmost", True)  # Ensure it's always on top
+def open_register_shots_window(root):
+    global register_shots_window
+    if register_shots_window is None or not tk.Toplevel.winfo_exists(register_shots_window):
+        register_shots_window = tk.Toplevel(root)
+        register_shots_window.title("Register Shots")
+        register_shots_window.geometry("500x150")
+        register_shots_window.resizable(False, False)  # Disable window resizing
+        register_shots_window.transient(root)  # Make the window transient to the main app window
+        register_shots_window.attributes("-topmost", True)  # Ensure it's always on top
 
-        # Create a frame for SHOTS folder selection
-        shots_folder_frame = tk.Frame(import_shots_window)
-        shots_folder_frame.pack(pady=5, padx=20, fill='x')
+        # Create the SHOTS folder selection
+        shots_folder_label = tk.Label(register_shots_window, text="SHOTS Folder:", anchor='e')
+        shots_folder_label.grid(row=0, column=0, padx=10, pady=10, sticky="e")
+        shots_folder_entry = tk.Entry(register_shots_window, width=40)
+        shots_folder_entry.grid(row=0, column=1, padx=10, pady=10, sticky="w")
+        browse_button_shots = tk.Button(register_shots_window, text="Browse", 
+                                        command=lambda: browse_shots_folder(shots_folder_entry, root))
+        browse_button_shots.grid(row=0, column=2, padx=10, pady=10)
 
-        shots_folder_label = tk.Label(shots_folder_frame, text="SHOTS Folder:")
-        shots_folder_label.pack(side='left', padx=5)
-        shots_folder_entry = tk.Entry(shots_folder_frame, width=40)
-        shots_folder_entry.pack(side='left', padx=5)
-        browse_button_shots = tk.Button(shots_folder_frame, text="Browse", 
-                                        command=lambda: browse_shots_folder(shots_folder_entry))
-        browse_button_shots.pack(side='left', padx=5)
+        # Create the save location for shotinfo.json
+        save_path_label = tk.Label(register_shots_window, text="Shotinfo Location:", anchor='e')
+        save_path_label.grid(row=1, column=0, padx=10, pady=10, sticky="e")
+        save_path_entry = tk.Entry(register_shots_window, width=40)
+        save_path_entry.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+        browse_button_save = tk.Button(register_shots_window, text="Browse", 
+                                       command=lambda: browse_save_location(save_path_entry, root))
+        browse_button_save.grid(row=1, column=2, padx=10, pady=10)
 
-        # Create a frame for save location selection
-        save_path_frame = tk.Frame(import_shots_window)
-        save_path_frame.pack(pady=5, padx=20, fill='x')
+        # Create the register button
+        generate_button = tk.Button(register_shots_window, text="Register Now", 
+                                    command=lambda: generate_json_action(register_shots_window, generate_button, shots_folder_entry, save_path_entry))
+        generate_button.grid(row=2, column=1, pady=10)
 
-        save_path_label = tk.Label(save_path_frame, text="Save Location:")
-        save_path_label.pack(side='left', padx=5)
-        save_path_entry = tk.Entry(save_path_frame, width=40)
-        save_path_entry.pack(side='left', padx=5)
-        browse_button_save = tk.Button(save_path_frame, text="Browse", 
-                                       command=lambda: browse_save_location(save_path_entry))
-        browse_button_save.pack(side='left', padx=5)
-
-        # Create the Generate JSON button
-        generate_button = tk.Button(import_shots_window, text="Generate JSON", 
-                                    command=lambda: generate_json_action(import_shots_window, generate_button, shots_folder_entry, save_path_entry))
-        generate_button.pack(pady=10)
-
-        import_shots_window.protocol("WM_DELETE_WINDOW", lambda: on_close(import_shots_window, 'shots'))
+        register_shots_window.protocol("WM_DELETE_WINDOW", lambda: on_close(register_shots_window, 'shots'))
     else:
-        import_shots_window.lift()  # Bring the window to the top
+        register_shots_window.lift()  # Bring the window to the top
 
 def generate_pipeline_action(window, project_directory_entry):
     """
@@ -97,18 +92,36 @@ def generate_json_action(window, button, shots_folder_entry, save_path_entry):
     window.destroy()  # Close the window on success
 
 def on_close(window, window_type):
-    window.destroy()
-    global create_pipeline_window, import_shots_window
+    global create_pipeline_window, register_shots_window, browse_window_open
     if window_type == 'pipeline':
         create_pipeline_window = None
     elif window_type == 'shots':
-        import_shots_window = None
+        register_shots_window = None
+    browse_window_open = False  # Reset browse window tracking when window closes
+    window.destroy()
 
-def browse_project_directory(project_directory_entry):
-    project_directory = filedialog.askdirectory(title="Select Project Directory")
-    if project_directory:
-        project_directory_entry.delete(0, tk.END)
-        project_directory_entry.insert(0, project_directory)
+def browse_project_directory(project_directory_entry, root):
+    open_folder_dialog(project_directory_entry, root)
+
+def browse_shots_folder(shots_folder_entry, root):
+    open_folder_dialog(shots_folder_entry, root)
+
+def browse_save_location(save_path_entry, root):
+    open_folder_dialog(save_path_entry, root)
+
+def open_folder_dialog(entry_field, root):
+    """
+    Opens a folder dialog and ensures only one instance is open.
+    Keeps the folder dialog window on top of all other windows.
+    """
+    global browse_window_open
+    if not browse_window_open:
+        browse_window_open = True
+        folder = filedialog.askdirectory(title="Select Folder", parent=root)
+        if folder:
+            entry_field.delete(0, tk.END)
+            entry_field.insert(0, folder)
+        browse_window_open = False  # Reset after the folder is selected
 
 def create_pipeline(project_directory_entry):
     project_path = project_directory_entry.get()
@@ -118,10 +131,12 @@ def create_pipeline(project_directory_entry):
     
     project_name = os.path.basename(project_path)  # Extract project name from folder name
     pipeline_folder_path = os.path.join(project_path, '00_pipeline')
-    
-    # Create 00_pipeline folder if it does not exist
-    if not os.path.exists(pipeline_folder_path):
-        os.makedirs(pipeline_folder_path)
+    cache_folder_path = os.path.join(project_path, 'cache')
+
+    # Create folders if they don't exist
+    for folder in [pipeline_folder_path, cache_folder_path]:
+        if not os.path.exists(folder):
+            os.makedirs(folder)
 
     # Copy contents of "resources" folder into 00_pipeline folder
     app_dir = os.path.dirname(os.path.abspath(__file__))  # App directory
@@ -167,21 +182,9 @@ def modify_pipeline_json(pipeline_folder, project_name):
         with open(pipeline_json_path, 'w') as file:
             file.write(modified_content)
 
-        messagebox.showinfo("Success", f"Pipeline folder and JSON file created successfully with project name '{project_name}'.")
+        messagebox.showinfo("Success", f"Pipeline initialized successfully.")
     else:
         messagebox.showerror("Error", "pipeline.json not found in the resources folder.")
-
-def browse_shots_folder(shots_folder_entry):
-    shots_folder = filedialog.askdirectory(title="Select SHOTS Folder")
-    if shots_folder:
-        shots_folder_entry.delete(0, tk.END)
-        shots_folder_entry.insert(0, shots_folder)
-
-def browse_save_location(save_path_entry):
-    save_path = filedialog.askdirectory(title="Select Folder to Save JSON")
-    if save_path:
-        save_path_entry.delete(0, tk.END)
-        save_path_entry.insert(0, save_path)
 
 def on_generate_click(shots_folder_entry, save_path_entry):
     shots_folder = shots_folder_entry.get()
@@ -208,7 +211,7 @@ def generate_shotinfo(shots_folder, save_path):
 
     with open(os.path.join(save_path, 'shotinfo.json'), 'w') as json_file:
         json.dump(shotinfo, json_file, indent=4)
-    messagebox.showinfo("Success", "shotinfo.json file created successfully.")
+    messagebox.showinfo("Success", "Shots registered successfully.")
 
 def exit_program(root):
     root.quit()
