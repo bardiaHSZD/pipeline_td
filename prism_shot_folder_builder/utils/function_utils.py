@@ -198,6 +198,8 @@ def on_generate_click(shots_folder_entry, save_path_entry):
 
 def generate_shotinfo(shots_folder, save_path):
     shot_ranges = {}
+    start_frame = 1001
+
     for seq_folder in os.listdir(shots_folder):
         if seq_folder.startswith("seq_") and seq_folder[4:].isdigit():
             seq_path = os.path.join(shots_folder, seq_folder)
@@ -205,13 +207,35 @@ def generate_shotinfo(shots_folder, save_path):
                 shot_ranges[seq_folder] = {}
                 for sh_folder in os.listdir(seq_path):
                     if sh_folder.startswith("SH") and sh_folder[2:].isdigit():
-                        shot_ranges[seq_folder][sh_folder] = [1001, 1100]
+                        # Update path to find .nk file in Scenefiles/COMPOSITE/MAINCOMP
+                        nk_path = os.path.join(seq_path, sh_folder, "Scenefiles", "COMPOSITE", "MAINCOMP")
+                        end_frame = find_last_frame_in_nk_file(nk_path)  # Find end_frame from .nk file
+                        shot_ranges[seq_folder][sh_folder] = [start_frame, end_frame]
     
     shotinfo = {"shotRanges": shot_ranges}
 
     with open(os.path.join(save_path, 'shotinfo.json'), 'w') as json_file:
         json.dump(shotinfo, json_file, indent=4)
     messagebox.showinfo("Success", "Shots registered successfully.")
+
+def find_last_frame_in_nk_file(folder_path):
+    """
+    Search for the .nk file inside the folder and extract the last_frame value.
+    """
+    for file_name in os.listdir(folder_path):
+        if file_name.endswith(".nk"):
+            nk_file_path = os.path.join(folder_path, file_name)
+            with open(nk_file_path, 'r') as nk_file:
+                for line in nk_file:
+                    # Check if the line contains 'last_frame' and a valid number after it
+                    if 'last_frame' in line:
+                        try:
+                            # Extract the number after 'last_frame'
+                            return int(line.split()[1])  # Assuming the number is right after 'last_frame'
+                        except (IndexError, ValueError):
+                            messagebox.showerror("Error", f"Invalid last_frame format in {nk_file_path}")
+                            return 1100  # Default to 1100 if there's a parsing error
+    return 1100  # Default end_frame if .nk file or last_frame is not found
 
 def exit_program(root):
     root.quit()
