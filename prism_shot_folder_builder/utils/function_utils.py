@@ -14,27 +14,33 @@ def open_create_pipeline_window(root):
     if create_pipeline_window is None or not tk.Toplevel.winfo_exists(create_pipeline_window):
         create_pipeline_window = tk.Toplevel(root)
         create_pipeline_window.title("Create Pipeline")
-        create_pipeline_window.geometry("500x100")
+        create_pipeline_window.geometry("550x150")  # Adjusted width for alignment
         create_pipeline_window.resizable(False, False)  # Disable window resizing
         create_pipeline_window.transient(root)  # Make the window transient to the main app window
         create_pipeline_window.attributes("-topmost", True)  # Ensure it's always on top
 
         # Create the Project Directory section
-        project_directory_frame = tk.Frame(create_pipeline_window)
-        project_directory_frame.pack(pady=10, padx=20, fill='x')
-
-        project_directory_label = tk.Label(project_directory_frame, text="Project Directory:")
-        project_directory_label.pack(side='left', padx=5)
-        project_directory_entry = tk.Entry(project_directory_frame, width=40)
-        project_directory_entry.pack(side='left', padx=5)
-        browse_button_project = tk.Button(project_directory_frame, text="Browse", 
+        project_directory_label = tk.Label(create_pipeline_window, text="Project Directory:", anchor="e")
+        project_directory_label.grid(row=0, column=0, padx=10, pady=10, sticky="e")
+        project_directory_entry = tk.Entry(create_pipeline_window, width=40)
+        project_directory_entry.grid(row=0, column=1, padx=10, pady=10, sticky="w")
+        browse_button_project = tk.Button(create_pipeline_window, text="Browse", 
                                           command=lambda: browse_project_directory(project_directory_entry, root))
-        browse_button_project.pack(side='left', padx=5)
+        browse_button_project.grid(row=0, column=2, padx=10, pady=10)
+
+        # Add section for browsing project image .png file
+        project_image_label = tk.Label(create_pipeline_window, text="Project Image (.png):", anchor="e")
+        project_image_label.grid(row=1, column=0, padx=10, pady=10, sticky="e")
+        project_image_entry = tk.Entry(create_pipeline_window, width=40)
+        project_image_entry.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+        browse_button_image = tk.Button(create_pipeline_window, text="Browse", 
+                                        command=lambda: browse_project_image(project_image_entry, root))
+        browse_button_image.grid(row=1, column=2, padx=10, pady=10)
 
         # Create the Generate Pipeline button
         generate_pipeline_button = tk.Button(create_pipeline_window, text="Generate Pipeline", 
-                                             command=lambda: generate_pipeline_action(create_pipeline_window, project_directory_entry))
-        generate_pipeline_button.pack(pady=10)
+                                             command=lambda: generate_pipeline_action(create_pipeline_window, project_directory_entry, project_image_entry))
+        generate_pipeline_button.grid(row=2, column=1, pady=10)
 
         create_pipeline_window.protocol("WM_DELETE_WINDOW", lambda: on_close(create_pipeline_window, 'pipeline'))
     else:
@@ -45,13 +51,13 @@ def open_register_shots_window(root):
     if register_shots_window is None or not tk.Toplevel.winfo_exists(register_shots_window):
         register_shots_window = tk.Toplevel(root)
         register_shots_window.title("Register Shots")
-        register_shots_window.geometry("500x150")
+        register_shots_window.geometry("550x150")  # Adjusted width for alignment
         register_shots_window.resizable(False, False)  # Disable window resizing
         register_shots_window.transient(root)  # Make the window transient to the main app window
         register_shots_window.attributes("-topmost", True)  # Ensure it's always on top
 
         # Create the SHOTS folder selection
-        shots_folder_label = tk.Label(register_shots_window, text="SHOTS Folder:", anchor='e')
+        shots_folder_label = tk.Label(register_shots_window, text="SHOTS Folder:", anchor="e")
         shots_folder_label.grid(row=0, column=0, padx=10, pady=10, sticky="e")
         shots_folder_entry = tk.Entry(register_shots_window, width=40)
         shots_folder_entry.grid(row=0, column=1, padx=10, pady=10, sticky="w")
@@ -60,7 +66,7 @@ def open_register_shots_window(root):
         browse_button_shots.grid(row=0, column=2, padx=10, pady=10)
 
         # Create the save location for shotinfo.json
-        save_path_label = tk.Label(register_shots_window, text="Shotinfo Location:", anchor='e')
+        save_path_label = tk.Label(register_shots_window, text="Shotinfo Location:", anchor="e")
         save_path_label.grid(row=1, column=0, padx=10, pady=10, sticky="e")
         save_path_entry = tk.Entry(register_shots_window, width=40)
         save_path_entry.grid(row=1, column=1, padx=10, pady=10, sticky="w")
@@ -77,11 +83,11 @@ def open_register_shots_window(root):
     else:
         register_shots_window.lift()  # Bring the window to the top
 
-def generate_pipeline_action(window, project_directory_entry):
+def generate_pipeline_action(window, project_directory_entry, project_image_entry):
     """
-    Perform the action for generating the pipeline, and close the window on success.
+    Perform the action for generating the pipeline and copying the project image, then close the window on success.
     """
-    create_pipeline(project_directory_entry)  # Perform the pipeline creation
+    create_pipeline(project_directory_entry, project_image_entry)  # Perform the pipeline creation and image copying
     window.destroy()  # Close the window on success
 
 def generate_json_action(window, button, shots_folder_entry, save_path_entry):
@@ -103,6 +109,19 @@ def on_close(window, window_type):
 def browse_project_directory(project_directory_entry, root):
     open_folder_dialog(project_directory_entry, root)
 
+def browse_project_image(project_image_entry, root):
+    """
+    Browse for a .png file to use as the project image.
+    """
+    global browse_window_open
+    if not browse_window_open:
+        browse_window_open = True
+        image_path = filedialog.askopenfilename(title="Select Project Image (.png)", filetypes=[("PNG files", "*.png")], parent=root)
+        if image_path:
+            project_image_entry.delete(0, tk.END)
+            project_image_entry.insert(0, image_path)
+        browse_window_open = False  # Reset after the file is selected
+
 def browse_shots_folder(shots_folder_entry, root):
     open_folder_dialog(shots_folder_entry, root)
 
@@ -123,8 +142,9 @@ def open_folder_dialog(entry_field, root):
             entry_field.insert(0, folder)
         browse_window_open = False  # Reset after the folder is selected
 
-def create_pipeline(project_directory_entry):
+def create_pipeline(project_directory_entry, project_image_entry):
     project_path = project_directory_entry.get()
+    project_image_path = project_image_entry.get()
     if not project_path:
         messagebox.showerror("Error", "Please select a project directory.")
         return
@@ -145,6 +165,13 @@ def create_pipeline(project_directory_entry):
         try:
             copy_resources_with_confirm(resources_folder_path, pipeline_folder_path)
             modify_pipeline_json(pipeline_folder_path, project_name)
+
+            # Copy and rename the selected project image .png file to 'project.png'
+            if project_image_path and os.path.exists(project_image_path):
+                shutil.copy2(project_image_path, os.path.join(pipeline_folder_path, 'project.png'))
+            else:
+                messagebox.showwarning("Warning", "No valid project image selected. Skipping image copy.")
+                
         except Exception as e:
             messagebox.showerror("Error", f"Failed to create pipeline: {str(e)}")
     else:
