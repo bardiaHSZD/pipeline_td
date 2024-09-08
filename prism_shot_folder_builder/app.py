@@ -4,6 +4,8 @@ import shutil
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from tkinter import ttk  # For separator line
+from utils.function_utils import *
+from utils.menu_utils import *
 
 # Initialize global variables to track the window instances
 create_pipeline_window = None
@@ -17,6 +19,8 @@ def open_create_pipeline_window():
         create_pipeline_window.title("Create Pipeline")
         create_pipeline_window.geometry("500x150")
         create_pipeline_window.resizable(False, False)  # Disable window resizing
+        create_pipeline_window.transient(root)  # Make the window transient to the main app window
+        create_pipeline_window.attributes("-topmost", True)  # Ensure it's always on top
 
         # Create the Project Directory section
         project_directory_frame = tk.Frame(create_pipeline_window)
@@ -47,6 +51,8 @@ def open_import_shots_window():
         import_shots_window.title("Import Shots")
         import_shots_window.geometry("500x200")
         import_shots_window.resizable(False, False)  # Disable window resizing
+        import_shots_window.transient(root)  # Make the window transient to the main app window
+        import_shots_window.attributes("-topmost", True)  # Ensure it's always on top
 
         # Create a frame for SHOTS folder selection
         shots_folder_frame = tk.Frame(import_shots_window)
