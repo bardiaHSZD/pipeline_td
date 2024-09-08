@@ -1,14 +1,17 @@
 import os
+import json
 import shutil
-import json  # Import the json module
 import tkinter as tk
 from tkinter import filedialog, messagebox
+from tkinter import ttk  # For separator line
+from utils.function_utils import *
 
-# Global variables to track the window instances
+# Initialize global variables to track the window instances
 create_pipeline_window = None
 import_shots_window = None
 
-def open_create_pipeline_window(root):
+# Function to open the Create Pipeline window
+def open_create_pipeline_window():
     global create_pipeline_window
     if create_pipeline_window is None or not tk.Toplevel.winfo_exists(create_pipeline_window):
         create_pipeline_window = tk.Toplevel(root)
@@ -32,14 +35,15 @@ def open_create_pipeline_window(root):
 
         # Create the Generate Pipeline button
         generate_pipeline_button = tk.Button(create_pipeline_window, text="Generate Pipeline", 
-                                             command=lambda: generate_pipeline_action(create_pipeline_window, project_directory_entry))
+                                             command=lambda: create_pipeline(project_directory_entry))
         generate_pipeline_button.pack(pady=10)
 
         create_pipeline_window.protocol("WM_DELETE_WINDOW", lambda: on_close(create_pipeline_window, 'pipeline'))
     else:
         create_pipeline_window.lift()  # Bring the window to the top
 
-def open_import_shots_window(root):
+# Function to open the Import Shots window
+def open_import_shots_window():
     global import_shots_window
     if import_shots_window is None or not tk.Toplevel.winfo_exists(import_shots_window):
         import_shots_window = tk.Toplevel(root)
@@ -75,27 +79,14 @@ def open_import_shots_window(root):
 
         # Create the Generate JSON button
         generate_button = tk.Button(import_shots_window, text="Generate JSON", 
-                                    command=lambda: generate_json_action(import_shots_window, generate_button, shots_folder_entry, save_path_entry))
+                                    command=lambda: on_generate_click(shots_folder_entry, save_path_entry))
         generate_button.pack(pady=10)
 
         import_shots_window.protocol("WM_DELETE_WINDOW", lambda: on_close(import_shots_window, 'shots'))
     else:
         import_shots_window.lift()  # Bring the window to the top
 
-def generate_pipeline_action(window, project_directory_entry):
-    """
-    Perform the action for generating the pipeline, and close the window on success.
-    """
-    create_pipeline(project_directory_entry)  # Perform the pipeline creation
-    window.destroy()  # Close the window on success
-
-def generate_json_action(window, button, shots_folder_entry, save_path_entry):
-    """
-    Perform the action for generating the JSON, and close the window on success.
-    """
-    on_generate_click(shots_folder_entry, save_path_entry)
-    window.destroy()  # Close the window on success
-
+# Function to close and reset the window variable when the window is closed
 def on_close(window, window_type):
     window.destroy()
     global create_pipeline_window, import_shots_window
@@ -104,12 +95,14 @@ def on_close(window, window_type):
     elif window_type == 'shots':
         import_shots_window = None
 
+# Function to browse for project folder
 def browse_project_directory(project_directory_entry):
     project_directory = filedialog.askdirectory(title="Select Project Directory")
     if project_directory:
         project_directory_entry.delete(0, tk.END)
         project_directory_entry.insert(0, project_directory)
 
+# Function to create the 00_pipeline folder and generate pipeline
 def create_pipeline(project_directory_entry):
     project_path = project_directory_entry.get()
     if not project_path:
@@ -135,6 +128,7 @@ def create_pipeline(project_directory_entry):
     else:
         messagebox.showerror("Error", "Resources folder not found in app directory.")
 
+# Function to copy resources into 00_pipeline folder with confirmation for overwriting files
 def copy_resources_with_confirm(source, destination):
     for item in os.listdir(source):
         s = os.path.join(source, item)
@@ -153,6 +147,7 @@ def copy_resources_with_confirm(source, destination):
         else:
             shutil.copy2(s, d)
 
+# Function to modify the pipeline.json file
 def modify_pipeline_json(pipeline_folder, project_name):
     pipeline_json_path = os.path.join(pipeline_folder, 'pipeline.json')
     if os.path.exists(pipeline_json_path):
@@ -171,18 +166,21 @@ def modify_pipeline_json(pipeline_folder, project_name):
     else:
         messagebox.showerror("Error", "pipeline.json not found in the resources folder.")
 
+# Function to browse for SHOTS folder
 def browse_shots_folder(shots_folder_entry):
     shots_folder = filedialog.askdirectory(title="Select SHOTS Folder")
     if shots_folder:
         shots_folder_entry.delete(0, tk.END)
         shots_folder_entry.insert(0, shots_folder)
 
+# Function to browse where to save the JSON file
 def browse_save_location(save_path_entry):
     save_path = filedialog.askdirectory(title="Select Folder to Save JSON")
     if save_path:
         save_path_entry.delete(0, tk.END)
         save_path_entry.insert(0, save_path)
 
+# Function to handle the Generate button click
 def on_generate_click(shots_folder_entry, save_path_entry):
     shots_folder = shots_folder_entry.get()
     save_path = save_path_entry.get()
@@ -193,6 +191,7 @@ def on_generate_click(shots_folder_entry, save_path_entry):
 
     generate_shotinfo(shots_folder, save_path)
 
+# Function to browse for SHOTS folder and generate shotinfo.json
 def generate_shotinfo(shots_folder, save_path):
     shot_ranges = {}
     for seq_folder in os.listdir(shots_folder):
@@ -210,8 +209,40 @@ def generate_shotinfo(shots_folder, save_path):
         json.dump(shotinfo, json_file, indent=4)
     messagebox.showinfo("Success", "shotinfo.json file created successfully.")
 
-def exit_program(root):
+# Function for the Exit submenu
+def exit_program():
     root.quit()
 
+# Function for the About submenu
 def show_about():
     messagebox.showinfo("About", "Copyright EEFA FX 2024")
+
+# Create the main window
+root = tk.Tk()
+root.title("Shot Info and Pipeline Generator")
+root.geometry("500x150")  # Set initial size
+root.state('normal')  # Enable maximize functionality
+
+# Create the menu bar
+menu_bar = tk.Menu(root)
+
+# Add File menu
+file_menu = tk.Menu(menu_bar, tearoff=0)
+file_menu.add_command(label="Exit", command=exit_program)
+menu_bar.add_cascade(label="File", menu=file_menu)
+
+# Add Help menu
+help_menu = tk.Menu(menu_bar, tearoff=0)
+help_menu.add_command(label="About", command=show_about)
+menu_bar.add_cascade(label="Help", menu=help_menu)
+
+# Add Tools menu with submenus
+tools_menu = tk.Menu(menu_bar, tearoff=0)
+tools_menu.add_command(label="Create Pipeline", command=open_create_pipeline_window)
+tools_menu.add_command(label="Import Shots", command=open_import_shots_window)
+menu_bar.add_cascade(label="Tools", menu=tools_menu)
+
+root.config(menu=menu_bar)
+
+# Start the GUI loop
+root.mainloop()
