@@ -1,5 +1,5 @@
 import tkinter as tk
-from utils.function_utils import open_create_pipeline_window, open_register_shots_window, exit_program, show_about
+from utils.function_utils import open_create_pipeline_window, open_register_shots_window, open_register_thumbnails_window, exit_program, show_about
 
 def create_menu(root):
     """
@@ -17,6 +17,7 @@ def create_menu(root):
     tools_menu = tk.Menu(menu_bar, tearoff=0)
     tools_menu.add_command(label="Create Pipeline", command=lambda: open_create_pipeline_window(root))
     tools_menu.add_command(label="Register Shots", command=lambda: open_register_shots_window(root))
+    tools_menu.add_command(label="Register Thumbnails", command=lambda: open_register_thumbnails_window(root))
     menu_bar.add_cascade(label="Tools", menu=tools_menu)
 
     # Add Help menu

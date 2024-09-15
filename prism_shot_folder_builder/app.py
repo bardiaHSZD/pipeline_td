@@ -13,4 +13,3 @@ create_menu(root)
 
 # Start the GUI loop
 root.mainloop()
-
