@@ -13,7 +13,7 @@ register_thumbnails_window = None
 browse_window_open = False  # Variable to check if a browse window is already open
 
 # Define the background color of the app
-APP_BG_COLOR = "#2d2d2d"
+APP_BG_COLOR = "#2d3336"
 
 # Apply dark theme to the app
 def apply_dark_theme(root):
@@ -171,6 +171,7 @@ def open_create_pipeline_window(root):
         create_pipeline_window.protocol("WM_DELETE_WINDOW", lambda: on_close(create_pipeline_window, 'pipeline'))
     else:
         create_pipeline_window.lift()
+
 # Function to handle JSON generation for shots and close the window
 def generate_json_action(window, button, shots_folder_entry, save_path_entry):
     """
@@ -218,6 +219,9 @@ def find_last_frame_in_nk_file(folder_path):
     """
     Search for the .nk file inside the folder and extract the last_frame value.
     """
+    if not os.path.exists(folder_path):
+        return 1100  # Default if the path does not exist
+
     for file_name in os.listdir(folder_path):
         if file_name.endswith(".nk"):
             nk_file_path = os.path.join(folder_path, file_name)
@@ -338,8 +342,8 @@ def register_thumbnails(sequence_entry, shotinfo_folder_entry, thumbnails_files_
         return
 
     for idx, filename in enumerate(thumbnails_files):
-        shot_number = f"SH{str(idx + 1).zfill(3)}"
-        destination_filename = f"seq_{sequence_number.zfill(3)}-{shot_number}_preview.jpg"
+        shot_number = f"SH{str(idx + 1).zfill(5)}"  # Modified for 5 digits
+        destination_filename = f"seq_{sequence_number.zfill(5)}-{shot_number}_preview.jpg"
         destination_path = os.path.join(shotinfo_folder, destination_filename)
 
         # Convert to JPG if necessary and save to destination
@@ -403,3 +407,4 @@ def exit_program(root):
 # About
 def show_about():
     messagebox.showinfo("About", "Copyright EEFA FX 2024")
+
