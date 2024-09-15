@@ -1,14 +1,14 @@
 import tkinter as tk
 from utils.menu_utils import create_menu
-from utils.function_utils import apply_dark_theme, exit_program, show_about
+from utils.helpers import exit_program, show_about
+from utils.theme_utils import apply_dark_theme
 
 # Create the main window
 root = tk.Tk()
 root.title("Shot Info and Pipeline Generator")
-root.geometry("1024x768")  # Set initial size
-root.state('normal')  # Enable maximize functionality
+root.geometry("1024x768")
 
-# Apply dark theme
+# Apply dark theme to the app
 apply_dark_theme(root)
 
 # Create the menu bar and add it to the root window
