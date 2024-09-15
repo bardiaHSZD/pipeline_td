@@ -1,2 +1,5 @@
 
 /prism_shot_folder_builder/utils/__pycache__
+/prism_shot_folder_builder/build
+/prism_shot_folder_builder/venv
+/prism_shot_folder_builder/dist
