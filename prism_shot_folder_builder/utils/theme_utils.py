@@ -16,6 +16,7 @@ def apply_dark_theme(root):
     highlight_color = "#3b3b3b"
     button_hover_color = "#444444"
     selected_bg = "#4f535c"
+    text_field_color = "#232323"
 
     # Set window background
     root.configure(bg=dark_bg)
@@ -23,8 +24,8 @@ def apply_dark_theme(root):
     # Configure the styles
     style.configure("TFrame", background=dark_bg)
     style.configure("TLabel", background=dark_bg, foreground=light_text)
-    style.configure("TEntry", background=highlight_color, foreground=light_text, fieldbackground=dark_bg)
-    style.configure("TButton", background=highlight_color, foreground=light_text, borderwidth=1)
+    style.configure("TEntry", background=highlight_color, foreground=light_text, fieldbackground=text_field_color, borderwidth=0)
+    style.configure("TButton", background=text_field_color, foreground=light_text, borderwidth=0)
     style.map("TButton", background=[('active', button_hover_color), ('pressed', selected_bg)])
 
     # Style combobox
