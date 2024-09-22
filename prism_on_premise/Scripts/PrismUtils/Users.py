@@ -99,12 +99,29 @@ class Users(object):
             return ""
 
         abbrev = ""
-        userName = userName.split()
-        if userName:
-            if len(userName) == 2 and len(userName[0]) > 0 and len(userName[1]) > 1:
-                abbrev = (userName[0][0] + userName[1][:2]).lower()
-            elif len(userName[0]) > 2:
-                abbrev = userName[0][:3].lower()
+        letters_part = ""
+        numbers_part = ""
+
+        # Separate alphabetic and numeric parts manually
+        for char in userName:
+            if char.isdigit():
+                numbers_part += char
+            else:
+                letters_part += char
+
+        vowels = "aeiouAEIOU" 
+        special_characters = "!@#$%^&*()_+-=`?,.<>[]{}"
+
+        abbrev = ""
+        if letters_part:
+            abbrev = letters_part[0]
+            letters_part = letters_part[1:]
+            abbrev += ''.join([char for char in letters_part if (char.lower() not in vowels) and (char.lower() not in special_characters)])
+
+        # Handle cases with and without numbers
+        if numbers_part:
+            # If there are numbers, append the full number part
+            abbrev += numbers_part
 
         return abbrev
 
