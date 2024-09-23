@@ -336,7 +336,7 @@
             "value": "@task_path@/@asset@_@task@_@version@@extension@"
         },
         "shotScenefiles": {
-            "value": "@task_path@/@sequence@-@shot@_@task@_@version@@extension@"
+            "value": "@task_path@/{{PROJECT_ACRONYM}}{{EPISODE}}_@sequence@_@shot@_@task@_@version@@extension@"
         },
         "products": {
             "value": "@entity_path@/Export/@product@"
@@ -348,7 +348,7 @@
             "value": "@productversion_path@/@asset@_@product@_@version@@.(frame)@@extension@"
         },
         "productFilesShots": {
-            "value": "@productversion_path@/@sequence@-@shot@_@product@_@version@@.(frame)@@extension@"
+            "value": "@productversion_path@/@sequence@_@shot@_@product@_@version@@.(frame)@@extension@"
         },
         "3drenders": {
             "value": "@entity_path@/Renders/3dRender/@identifier@"
@@ -369,7 +369,7 @@
             "value": "[expression,#  available variables:\n#  \"core\" - PrismCore\n#  \"context\" - dict\n\nif context.get(\"mediaType\") == \"2drenders\":\n\ttemplate = \"@aov_path@/@asset@_@identifier@_@version@@.(frame)@@extension@\"\nelse:\n\ttemplate = \"@aov_path@/@asset@_@identifier@_@version@_@aov@@.(frame)@@extension@\"]"
         },
         "renderFilesShots": {
-            "value": "[expression,#  available variables:\n#  \"core\" - PrismCore\n#  \"context\" - dict\n\nif context.get(\"mediaType\") == \"2drenders\":\n\ttemplate = \"@aov_path@/@sequence@-@shot@_@identifier@_@version@@.(frame)@@extension@\"\nelse:\n\ttemplate = \"@aov_path@/@sequence@-@shot@_@identifier@_@version@_@aov@@.(frame)@@extension@\"]"
+            "value": "[expression,#  available variables:\n#  \"core\" - PrismCore\n#  \"context\" - dict\n\nif context.get(\"mediaType\") == \"2drenders\":\n\ttemplate = \"@aov_path@/@sequence@_@shot@_@identifier@_@version@@.(frame)@@extension@\"\nelse:\n\ttemplate = \"@aov_path@/@sequence@_@shot@_@identifier@_@version@_@aov@@.(frame)@@extension@\"]"
         },
         "playblasts": {
             "value": "@entity_path@/Playblasts/@identifier@"
@@ -381,13 +381,13 @@
             "value": "@playblastversion_path@/@asset@_@identifier@_@version@@.(frame)@@extension@"
         },
         "playblastFilesShots": {
-            "value": "@playblastversion_path@/@sequence@-@shot@_@identifier@_@version@@.(frame)@@extension@"
+            "value": "@playblastversion_path@/@sequence@_@shot@_@identifier@_@version@@.(frame)@@extension@"
         },
         "houdini_HDAs": {
             "value": "@project_path@/04_Resources/HDAs"
         },
         "deadlineJobName": {
-            "value": "[expression,#  available variables:\n#  \"core\" - PrismCore\n#  \"context\" - dict\n\nif context.get(\"type\") == \"asset\":\n    base = \"@asset@\"\nelse:\n    base = \"@sequence@-@shot@\"\n\ntemplate = base + \"_@product@@identifier@_@version@\"]"
+            "value": "[expression,#  available variables:\n#  \"core\" - PrismCore\n#  \"context\" - dict\n\nif context.get(\"type\") == \"asset\":\n    base = \"@asset@\"\nelse:\n    base = \"@sequence@_@shot@\"\n\ntemplate = base + \"_@product@@identifier@_@version@\"]"
         }
     },
     "defaultpasses": {

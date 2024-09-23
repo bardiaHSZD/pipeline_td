@@ -103,7 +103,7 @@ class Prism_Deadline_Functions(object):
 if context.get("type") == "asset":
     base = "@asset@"
 else:
-    base = "@sequence@-@shot@"
+    base = "@sequence@_@shot@"
 
 template = base + "_@product@@identifier@_@version@"]"""
 

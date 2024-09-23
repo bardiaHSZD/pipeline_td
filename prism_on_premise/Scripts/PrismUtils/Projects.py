@@ -1137,7 +1137,7 @@ class Projects(object):
         structure["shotScenefiles"] = {
             "label": "Shot Scenefiles",
             "key": "@scenefile_path@",
-            "value": "@task_path@/@sequence@-@shot@_@task@_@version@@extension@",
+            "value": "@task_path@/@sequence@_@shot@_@task@_@version@@extension@",
             "requires": ["task_path", "version"],
         }
         structure["products"] = {
@@ -1161,7 +1161,7 @@ class Projects(object):
         structure["productFilesShots"] = {
             "label": "Shot Productfiles",
             "key": "@productfile_path@",
-            "value": "@productversion_path@/@sequence@-@shot@_@product@_@version@@.(frame)@@extension@",
+            "value": "@productversion_path@/@sequence@_@shot@_@product@_@version@@.(frame)@@extension@",
             "requires": ["productversion_path"],
         }
         structure["3drenders"] = {
@@ -1203,7 +1203,7 @@ class Projects(object):
         structure["renderFilesShots"] = {
             "label": "Shot Renderfiles",
             "key": "@renderfile_path@",
-            "value": "[expression,#  available variables:\n#  \"core\" - PrismCore\n#  \"context\" - dict\n\nif context.get(\"mediaType\") == \"2drenders\":\n\ttemplate = \"@aov_path@/@sequence@-@shot@_@identifier@_@version@@.(frame)@@extension@\"\nelse:\n\ttemplate = \"@aov_path@/@sequence@-@shot@_@identifier@_@version@_@aov@@.(frame)@@extension@\"]",
+            "value": "[expression,#  available variables:\n#  \"core\" - PrismCore\n#  \"context\" - dict\n\nif context.get(\"mediaType\") == \"2drenders\":\n\ttemplate = \"@aov_path@/@sequence@_@shot@_@identifier@_@version@@.(frame)@@extension@\"\nelse:\n\ttemplate = \"@aov_path@/@sequence@_@shot@_@identifier@_@version@_@aov@@.(frame)@@extension@\"]",
             "requires": ["aov_path"],
         }
         structure["playblasts"] = {
@@ -1227,7 +1227,7 @@ class Projects(object):
         structure["playblastFilesShots"] = {
             "label": "Shot Playblastsfiles",
             "key": "@playblastfile_path@",
-            "value": "@playblastversion_path@/@sequence@-@shot@_@identifier@_@version@@.(frame)@@extension@",
+            "value": "@playblastversion_path@/@sequence@_@shot@_@identifier@_@version@@.(frame)@@extension@",
             "requires": ["playblastversion_path"],
         }
         for key in self.extraStructureItems:
@@ -1248,7 +1248,7 @@ class Projects(object):
                 "value": "@project_path@/03_Workflow/Shots/@sequence@"
             }, 
             "shots": {
-                "value": "@project_path@/03_Workflow/Shots/@sequence@-@shot@"
+                "value": "@project_path@/03_Workflow/Shots/@sequence@_@shot@"
             },
             "textures": {
                 "value": "@project_path@/04_Assets/Textures"
@@ -1263,7 +1263,7 @@ class Projects(object):
                 "value": "@task_path@/@asset@_@department@_@task@_@version@_@comment@_@user@_@extension@"
             }, 
             "shotScenefiles": {
-                "value": "@task_path@/shot_@sequence@-@shot@_@department@_@task@_@version@_@comment@_@user@_@extension@"
+                "value": "@task_path@/shot_@sequence@_@shot@_@department@_@task@_@version@_@comment@_@user@_@extension@"
             }, 
             "products": {
                 "value": "@entity_path@/Export/@product@"
@@ -1275,7 +1275,7 @@ class Projects(object):
                 "value": "@productversion_path@/@unit@/@asset@_@product@_@version@@.(frame)@@extension@"
             }, 
             "productFilesShots": {
-                "value": "@productversion_path@/@unit@/shot_@sequence@-@shot@_@product@_@version@@.(frame)@@extension@"
+                "value": "@productversion_path@/@unit@/shot_@sequence@_@shot@_@product@_@version@@.(frame)@@extension@"
             }, 
             "3drenders": {
                 "value": "@entity_path@/Rendering/3dRender/@identifier@"
@@ -1296,7 +1296,7 @@ class Projects(object):
                 "value": "@aov_path@/@asset@_@identifier@_@version@_@aov@@.(frame)@@extension@"
             }, 
             "renderFilesShots": {
-                "value": "@aov_path@/shot_@sequence@-@shot@_@identifier@_@version@_@aov@@.(frame)@@extension@"
+                "value": "@aov_path@/shot_@sequence@_@shot@_@identifier@_@version@_@aov@@.(frame)@@extension@"
             }, 
             "playblasts": {
                 "value": "@entity_path@/Playblasts/@identifier@"
@@ -1308,7 +1308,7 @@ class Projects(object):
                 "value": "@playblastversion_path@/@asset@_@identifier@_@version@@.(frame)@@extension@"
             }, 
             "playblastFilesShots": {
-                "value": "@playblastversion_path@/shot_@sequence@-@shot@_@identifier@_@version@@.(frame)@@extension@"
+                "value": "@playblastversion_path@/shot_@sequence@_@shot@_@identifier@_@version@@.(frame)@@extension@"
             }, 
             "houdini_HDAs": {
                 "value": "@project_path@/04_Assets/HDAs"
