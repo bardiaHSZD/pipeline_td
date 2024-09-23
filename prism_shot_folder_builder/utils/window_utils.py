@@ -137,19 +137,27 @@ def open_register_shots_window(root):
         # Set background for the window
         set_window_background(register_shots_window)
 
-        # SHOTS folder selection
+        # Create a larger font to increase the height of the entry fields
+        larger_font = Font(family="Helvetica", size=14)
+
+        # Configure a style for the text fields
+        style = ttk.Style()
+        style.theme_use("clam")  # Ensure a compatible theme is set
+        style.configure("Black.TEntry", font=larger_font, fieldbackground="#494949", foreground="#ffffff")
+
+        # SHOTS folder selection with black background entry
         shots_folder_label = ttk.Label(register_shots_window, text="SHOTS Folder:")
         shots_folder_label.grid(row=0, column=0, padx=10, pady=10, sticky="e")
-        shots_folder_entry = ttk.Entry(register_shots_window, width=40)
+        shots_folder_entry = ttk.Entry(register_shots_window, width=40, style="Black.TEntry")
         shots_folder_entry.grid(row=0, column=1, padx=10, pady=10, sticky="w")
         browse_button_shots = ttk.Button(register_shots_window, text="Browse", 
                                          command=lambda: browse_shots_folder(shots_folder_entry, root))
         browse_button_shots.grid(row=0, column=2, padx=10, pady=10)
 
-        # Shotinfo save location
+        # Shotinfo save location with black background entry
         save_path_label = ttk.Label(register_shots_window, text="Shotinfo Location:")
         save_path_label.grid(row=1, column=0, padx=10, pady=10, sticky="e")
-        save_path_entry = ttk.Entry(register_shots_window, width=40)
+        save_path_entry = ttk.Entry(register_shots_window, width=40, style="Black.TEntry")
         save_path_entry.grid(row=1, column=1, padx=10, pady=10, sticky="w")
         browse_button_save = ttk.Button(register_shots_window, text="Browse", 
                                         command=lambda: browse_save_location(save_path_entry, root))
@@ -170,7 +178,7 @@ def open_register_thumbnails_window(root):
     if register_thumbnails_window is None or not tk.Toplevel.winfo_exists(register_thumbnails_window):
         register_thumbnails_window = tk.Toplevel(root)
         register_thumbnails_window.title("Register Thumbnails")
-        register_thumbnails_window.geometry("550x200")
+        register_thumbnails_window.geometry("550x200")  # Adjust the height for new fields
         register_thumbnails_window.resizable(False, False)
         register_thumbnails_window.transient(root)
         register_thumbnails_window.attributes("-topmost", True)
@@ -178,25 +186,53 @@ def open_register_thumbnails_window(root):
         # Set background for the window
         set_window_background(register_thumbnails_window)
 
+        # Create a larger font to increase the height of the entry fields
+        larger_font = Font(family="Helvetica", size=14)  # Adjust the font size as necessary
+
+        # Configure a style for larger text fields and spinbox for uniform height
+        style = ttk.Style()
+        style.theme_use("clam")  # Ensure a compatible theme is set
+        style.configure("Larger.TEntry", font=larger_font, fieldbackground="#494949", foreground="#ffffff")
+        style.configure("Larger.TSpinbox", font=larger_font, arrowsize=13, foreground="#ffffff", fieldbackground="#494949")
+
         # Thumbnails File selection
-        thumbnails_files_label = ttk.Label(register_thumbnails_window, text="Thumbnails Files (.jpg, .png):")
+        thumbnails_files_label = ttk.Label(register_thumbnails_window, text="Thumbnails Files:")
         thumbnails_files_label.grid(row=0, column=0, padx=10, pady=10, sticky="e")
-        thumbnails_files_entry = ttk.Entry(register_thumbnails_window, width=40)
+        thumbnails_files_entry = ttk.Entry(register_thumbnails_window, width=40, style="Larger.TEntry")  # Larger entry style
         thumbnails_files_entry.grid(row=0, column=1, padx=10, pady=10, sticky="w")
         browse_button_thumbnails = ttk.Button(register_thumbnails_window, text="Browse", 
                                               command=lambda: browse_thumbnails_files(thumbnails_files_entry, root))
         browse_button_thumbnails.grid(row=0, column=2, padx=10, pady=10)
 
-        # Sequence Number Entry
+        # Sequence Number Entry with 5-digit limit and spinbox
         sequence_label = ttk.Label(register_thumbnails_window, text="Sequence Number:")
         sequence_label.grid(row=1, column=0, padx=10, pady=10, sticky="e")
-        sequence_entry = ttk.Entry(register_thumbnails_window, width=40)
-        sequence_entry.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+
+        # Validation function to ensure only 5-digit numbers
+        def validate_sequence_input(text):
+            if text.isdigit() and len(text) <= 5:  # Allow only numbers up to 5 digits
+                return True
+            return False
+
+        sequence_validate_cmd = register_thumbnails_window.register(validate_sequence_input)
+
+        # Spinbox for Sequence Number with increased width and validation
+        sequence_spinbox = ttk.Spinbox(
+            register_thumbnails_window,
+            from_=1, to=99999,
+            width=36,  # Increase width for a larger appearance
+            format="%05.0f",  # Format with leading zeros for 5 digits
+            validate="key",
+            validatecommand=(sequence_validate_cmd, '%P'),
+            style="Larger.TSpinbox"  # Apply larger spinbox style
+        )
+        sequence_spinbox.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+        sequence_spinbox.set("00001")  # Set default value
 
         # Shotinfo Folder selection
         shotinfo_folder_label = ttk.Label(register_thumbnails_window, text="Shotinfo Folder:")
         shotinfo_folder_label.grid(row=2, column=0, padx=10, pady=10, sticky="e")
-        shotinfo_folder_entry = ttk.Entry(register_thumbnails_window, width=40)
+        shotinfo_folder_entry = ttk.Entry(register_thumbnails_window, width=40, style="Larger.TEntry")  # Larger entry style
         shotinfo_folder_entry.grid(row=2, column=1, padx=10, pady=10, sticky="w")
         browse_button_shotinfo = ttk.Button(register_thumbnails_window, text="Browse", 
                                             command=lambda: browse_save_location(shotinfo_folder_entry, root))
@@ -204,7 +240,7 @@ def open_register_thumbnails_window(root):
 
         # Register Thumbnails Button
         register_thumbnails_button = ttk.Button(register_thumbnails_window, text="Register Thumbnails", 
-                                                command=lambda: register_thumbnails(sequence_entry, shotinfo_folder_entry, thumbnails_files_entry))
+                                                command=lambda: register_thumbnails(sequence_spinbox, shotinfo_folder_entry, thumbnails_files_entry))
         register_thumbnails_button.grid(row=3, column=1, pady=10)
 
         register_thumbnails_window.protocol("WM_DELETE_WINDOW", lambda: on_close(register_thumbnails_window, 'thumbnails'))
