@@ -11,12 +11,11 @@ def apply_dark_theme(root):
     style.theme_use("clam")
 
     # Colors for dark mode
-    dark_bg = APP_BG_COLOR
+    dark_bg = "#2d3336"
     light_text = "#ffffff"
     highlight_color = "#3b3b3b"
     button_hover_color = "#444444"
     selected_bg = "#4f535c"
-    text_field_color = "#232323"
 
     # Set window background
     root.configure(bg=dark_bg)
@@ -24,13 +23,14 @@ def apply_dark_theme(root):
     # Configure the styles
     style.configure("TFrame", background=dark_bg)
     style.configure("TLabel", background=dark_bg, foreground=light_text)
-    style.configure("TEntry", background=highlight_color, foreground=light_text, fieldbackground=text_field_color, borderwidth=0)
-    style.configure("TButton", background=text_field_color, foreground=light_text, borderwidth=0)
+    style.configure("TEntry", background=dark_bg, foreground=light_text, fieldbackground=dark_bg)
+    style.configure("TButton", background=dark_bg, foreground=light_text, borderwidth=1)
     style.map("TButton", background=[('active', button_hover_color), ('pressed', selected_bg)])
 
-    # Style combobox
-    style.configure("TCombobox", background=dark_bg, foreground=light_text, fieldbackground=dark_bg)
-    style.map("TCombobox", fieldbackground=[('readonly', dark_bg)], selectbackground=[('readonly', selected_bg)])
+    # Style Spinbox like the other fields
+    style.configure("TSpinbox", background=dark_bg, foreground=light_text, fieldbackground=dark_bg)
+    style.map("TSpinbox", fieldbackground=[('readonly', dark_bg)], selectbackground=[('readonly', selected_bg)])
+
 
 # Set the background color for new windows opened from submenus
 def set_window_background(window):

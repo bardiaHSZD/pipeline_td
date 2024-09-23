@@ -131,47 +131,6 @@ def generate_pipeline_action(window, project_directory_entry, project_image_entr
 
     window.destroy()  # Close the window after pipeline creation
 
-# Create Pipeline Window
-def open_create_pipeline_window(root):
-    global create_pipeline_window
-    if create_pipeline_window is None or not tk.Toplevel.winfo_exists(create_pipeline_window):
-        create_pipeline_window = tk.Toplevel(root)
-        create_pipeline_window.title("Create Pipeline")
-        create_pipeline_window.geometry("550x150")
-        create_pipeline_window.resizable(False, False)
-        create_pipeline_window.transient(root)
-        create_pipeline_window.attributes("-topmost", True)
-
-        # Set background for the window
-        set_window_background(create_pipeline_window)
-
-        # Project Directory
-        project_directory_label = ttk.Label(create_pipeline_window, text="Project Directory:")
-        project_directory_label.grid(row=0, column=0, padx=10, pady=10, sticky="e")
-        project_directory_entry = ttk.Entry(create_pipeline_window, width=40)
-        project_directory_entry.grid(row=0, column=1, padx=10, pady=10, sticky="w")
-        browse_button_project = ttk.Button(create_pipeline_window, text="Browse", 
-                                           command=lambda: browse_project_directory(project_directory_entry, root))
-        browse_button_project.grid(row=0, column=2, padx=10, pady=10)
-
-        # Project Image
-        project_image_label = ttk.Label(create_pipeline_window, text="Project Image (.png):")
-        project_image_label.grid(row=1, column=0, padx=10, pady=10, sticky="e")
-        project_image_entry = ttk.Entry(create_pipeline_window, width=40)
-        project_image_entry.grid(row=1, column=1, padx=10, pady=10, sticky="w")
-        browse_button_image = ttk.Button(create_pipeline_window, text="Browse", 
-                                         command=lambda: browse_project_image(project_image_entry, root))
-        browse_button_image.grid(row=1, column=2, padx=10, pady=10)
-
-        # Generate Pipeline Button
-        generate_pipeline_button = ttk.Button(create_pipeline_window, text="Generate Pipeline", 
-                                              command=lambda: generate_pipeline_action(create_pipeline_window, project_directory_entry, project_image_entry))
-        generate_pipeline_button.grid(row=2, column=1, pady=10)
-
-        create_pipeline_window.protocol("WM_DELETE_WINDOW", lambda: on_close(create_pipeline_window, 'pipeline'))
-    else:
-        create_pipeline_window.lift()
-
 # Function to handle JSON generation for shots and close the window
 def generate_json_action(window, button, shots_folder_entry, save_path_entry):
     """
@@ -196,7 +155,7 @@ def generate_shotinfo(shots_folder, save_path):
     start_frame = 1001  # Start frame for each shot
 
     for seq_folder in os.listdir(shots_folder):
-        if seq_folder.startswith("seq_") and seq_folder[4:].isdigit():
+        if seq_folder.startswith("SEQ") and seq_folder[4:].isdigit():
             seq_path = os.path.join(shots_folder, seq_folder)
             if os.path.isdir(seq_path):
                 shot_ranges[seq_folder] = {}
@@ -343,7 +302,7 @@ def register_thumbnails(sequence_entry, shotinfo_folder_entry, thumbnails_files_
 
     for idx, filename in enumerate(thumbnails_files):
         shot_number = f"SH{str(idx + 1).zfill(5)}"  # Modified for 5 digits
-        destination_filename = f"seq_{sequence_number.zfill(5)}-{shot_number}_preview.jpg"
+        destination_filename = f"SEQ{sequence_number.zfill(5)}-{shot_number}_preview.jpg"
         destination_path = os.path.join(shotinfo_folder, destination_filename)
 
         # Convert to JPG if necessary and save to destination

@@ -18,7 +18,7 @@ def generate_shotinfo(shots_folder, save_path):
     start_frame = 1001
 
     for seq_folder in os.listdir(shots_folder):
-        if seq_folder.startswith("seq_") and seq_folder[4:].isdigit():
+        if seq_folder.startswith("SEQ") and seq_folder[4:].isdigit():
             seq_path = os.path.join(shots_folder, seq_folder)
             if os.path.isdir(seq_path):
                 shot_ranges[seq_folder] = {}

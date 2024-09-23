@@ -336,7 +336,7 @@
             "value": "@task_path@/@asset@_@task@_@version@@extension@"
         },
         "shotScenefiles": {
-            "value": "@task_path@/@PROJECT_ACRONYM@@EPISODE@_@sequence@_@shot@_@task@_@version@@extension@"
+            "value": "@task_path@/@acronym@@episode@_@sequence@_@shot@_@task@_@version@@extension@"
         },
         "products": {
             "value": "@entity_path@/Export/@product@"

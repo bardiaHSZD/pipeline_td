@@ -27,7 +27,7 @@ def register_thumbnails(sequence_entry, shotinfo_folder_entry, thumbnails_files_
 
     for idx, filename in enumerate(thumbnails_files):
         shot_number = f"SH{str(idx + 1).zfill(5)}"
-        destination_filename = f"seq_{sequence_number.zfill(5)}-{shot_number}_preview.jpg"
+        destination_filename = f"SEQ{sequence_number.zfill(5)}-{shot_number}_preview.jpg"
         destination_path = os.path.join(shotinfo_folder, destination_filename)
 
         if filename.endswith(".png") or filename.endswith(".jpg"):
