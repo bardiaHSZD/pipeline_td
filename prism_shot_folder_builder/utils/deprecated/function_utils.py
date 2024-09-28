@@ -5,6 +5,8 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 from tkinter import ttk
 from PIL import Image
+from natsort import natsorted 
+
 
 # Global variables to track the window instances
 create_pipeline_window = None
@@ -282,37 +284,7 @@ def open_register_thumbnails_window(root):
     else:
         register_thumbnails_window.lift()
 
-# Thumbnail registration logic
-def register_thumbnails(sequence_entry, shotinfo_folder_entry, thumbnails_files_entry):
-    thumbnails_files = thumbnails_files_entry.get().split()  # Split the string for multiple files
-    sequence_number = sequence_entry.get()
-    shotinfo_folder = shotinfo_folder_entry.get()
 
-    if not thumbnails_files or not sequence_number or not shotinfo_folder:
-        messagebox.showerror("Error", "Please select thumbnails, enter sequence number, and select shotinfo folder.")
-        return
-
-    thumbnails_files.sort()  # Sort the filenames
-
-    # Find the longest common string from the beginning of the filenames
-    prefix = os.path.commonprefix(thumbnails_files)
-    if not prefix:
-        messagebox.showerror("Error", "Could not determine common prefix.")
-        return
-
-    for idx, filename in enumerate(thumbnails_files):
-        shot_number = f"SH{str(idx + 1).zfill(5)}"  # Modified for 5 digits
-        destination_filename = f"SEQ{sequence_number.zfill(5)}-{shot_number}_preview.jpg"
-        destination_path = os.path.join(shotinfo_folder, destination_filename)
-
-        # Convert to JPG if necessary and save to destination
-        if filename.endswith(".png") or filename.endswith(".jpg"):
-            with Image.open(filename) as img:
-                img.convert("RGB").save(destination_path, "JPEG")
-        else:
-            messagebox.showwarning("Warning", f"File {filename} is not a valid image format and was skipped.")
-
-    messagebox.showinfo("Success", "Thumbnails have been registered successfully!")
 
 # Browse project directory
 def browse_project_directory(project_directory_entry, root):
