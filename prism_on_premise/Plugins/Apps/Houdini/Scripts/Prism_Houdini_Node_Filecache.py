@@ -57,7 +57,7 @@ class Prism_Houdini_Filecache(object):
 
     @err_catcher(name=__name__)
     def getTypeName(self):
-        return "prism::Filecache"
+        return "Prism::Filecache"
 
     @err_catcher(name=__name__)
     def getFormats(self, kwargs=None):

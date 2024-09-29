@@ -668,7 +668,7 @@ class Prism_Maya_Functions(object):
         if not os.path.exists(modPath):
             os.makedirs(modPath)
 
-        with open(os.path.join(modPath, "prism.mod"), "a") as modFile:
+        with open(os.path.join(modPath, "Prism.mod"), "a") as modFile:
             modFile.write("\n+ prism 1.0 .\\")
 
         varText = "MAYA_MODULE_PATH=%s;&" % modPath

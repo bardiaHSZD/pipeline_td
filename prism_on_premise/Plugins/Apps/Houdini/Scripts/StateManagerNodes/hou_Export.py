@@ -95,7 +95,7 @@ class ExportClass(object):
             "pixar::usdrop": {"outputparm": "usdfile"},
             "usd": {"outputparm": "lopoutput"},
             "Redshift_Proxy_Output": {"outputparm": "RS_archive_file"},
-            "prism::Filecache::1.0": {"outputparm": "outputPath"},
+            "Prism::Filecache::1.0": {"outputparm": "outputPath"},
             "vellumio": {"outputparm": "file"},
             "vellumio::2.0": {"outputparm": "file"},
         }
@@ -507,7 +507,7 @@ class ExportClass(object):
         if not self.core.appPlugin.isNodeValid(self, node):
             return False
 
-        if node.type().name().startswith("prism::Filecache"):
+        if node.type().name().startswith("Prism::Filecache"):
             return True
 
         return False
@@ -797,7 +797,7 @@ class ExportClass(object):
             if (
                 self.node is None
                 or self.node.type().name()
-                not in ["rop_alembic", "alembic", "wedge", "prism::Filecache::1.0"]
+                not in ["rop_alembic", "alembic", "wedge", "Prism::Filecache::1.0"]
             ) and createMissing:
                 self.createNode()
         elif idx == ".fbx":
@@ -813,7 +813,7 @@ class ExportClass(object):
             if (
                 self.node is None
                 or self.node.type().name()
-                not in ["rop_fbx", "wedge", "prism::Filecache::1.0"]
+                not in ["rop_fbx", "wedge", "Prism::Filecache::1.0"]
             ) and createMissing:
                 self.createNode()
         elif idx in [".usd", ".usdc", ".usda"]:
@@ -829,7 +829,7 @@ class ExportClass(object):
             if (
                 self.node is None
                 or self.node.type().name()
-                not in ["pixar::usdrop", "usd", "wedge", "prism::Filecache::1.0"]
+                not in ["pixar::usdrop", "usd", "wedge", "Prism::Filecache::1.0"]
             ) and createMissing:
                 self.createNode()
         elif idx == ".rs":
@@ -970,7 +970,7 @@ class ExportClass(object):
             "pixar::usdrop",
             "usd",
             "Redshift_Proxy_Output",
-            "prism::Filecache::1.0",
+            "Prism::Filecache::1.0",
             "vellumio",
             "vellumio::2.0"
         ] or cat == "Driver" and typeName in ["geometry", "alembic", "wedge"]
@@ -1021,7 +1021,7 @@ class ExportClass(object):
                 extension = ".bgeo.sc"
             else:
                 extension = os.path.splitext(outVal)[1]
-        elif typeName in ["prism::Filecache::1.0"]:
+        elif typeName in ["Prism::Filecache::1.0"]:
             extension = node.parm("format").evalAsString()
         elif (
             typeName == "geometry"

@@ -277,7 +277,7 @@ class ImportFileClass(object):
         if not self.core.appPlugin.isNodeValid(self, node):
             return False
 
-        if node.type().name().startswith("prism::ImportFile"):
+        if node.type().name().startswith("Prism::ImportFile"):
             return True
 
         return False

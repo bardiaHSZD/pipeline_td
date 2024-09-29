@@ -98,7 +98,7 @@ class ProjectBrowser(QMainWindow, ProjectBrowser_ui.Ui_mw_ProjectBrowser):
         self.core.parentWindow(self)
 
         self.setWindowTitle(
-            "Prism %s - %s - %s"
+            "EEFA Prism %s - %s - %s"
             % (self.core.version, self.core.tr("Project Browser"), self.core.projectName)
         )
         self.tabs = []

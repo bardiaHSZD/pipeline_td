@@ -446,7 +446,7 @@ class Prism_Houdini_Functions(object):
         convertNode=False,
     ):
         namespace = self.core.getConfig(
-            "houdini", "assetNamespace", dft="prism", configPath=self.core.prismIni
+            "houdini", "assetNamespace", dft="Prism", configPath=self.core.prismIni
         )
         if namespace:
             typeName = namespace + "::" + typeName

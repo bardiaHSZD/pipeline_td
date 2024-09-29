@@ -355,7 +355,7 @@ class Page_Finished(QWidget):
         if not self.parent.w_pageStart.chb_integrations.isChecked():
             self.b_back.setVisible(False)
 
-        msg = " EEFA Prism %s was installed successfully!" % self.parent.core.version
+        msg = " Prism %s was installed successfully!" % self.parent.core.version
         self.l_success.setText(msg)
 
 
@@ -515,7 +515,7 @@ class PrismInstaller(QDialog, PrismInstaller_ui.Ui_dlg_installer):
 
             if False not in result.values():
                 if self.installShortcuts and successPopup:
-                    self.core.popup("EEFA Prism was installed successfully.", severity="info", parent=self)
+                    self.core.popup("Prism was installed successfully.", severity="info", parent=self)
             else:
                 msgString = "Some parts failed to install:\n\n"
                 for i in result:
@@ -632,7 +632,7 @@ class Uninstaller(QDialog):
                 result["Prism Files"] = self.removePrismFiles(postDeletePaths)
 
         if False not in result.values():
-            msgStr = "EEFA Prism was uninstalled successfully."
+            msgStr = "Prism was uninstalled successfully."
             if postDeletePaths:
                 msgStr += "\nThe last remaining files will be removed after closing this window."
 

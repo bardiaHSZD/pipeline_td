@@ -136,7 +136,7 @@ class PrismTray:
 
             self.trayIcon = QSystemTrayIcon()
             self.trayIcon.setContextMenu(self.trayIconMenu)
-            self.trayIcon.setToolTip("Prism Tools")
+            self.trayIcon.setToolTip("EEFA Prism Tools")
 
             self.icon = QIcon(
                 os.path.join(
