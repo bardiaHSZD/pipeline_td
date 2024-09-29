@@ -187,7 +187,7 @@ class PrismCore:
 
         try:
             # set some general variables
-            self.version = "v2.0.10"
+            self.version = "1.0.0"#"v2.0.10"
             self.requiredLibraries = "v2.0.0"
             self.core = self
             self.preferredExtension = os.getenv("PRISM_CONFIG_EXTENSION", ".json")
@@ -267,7 +267,7 @@ class PrismCore:
             else:
                 debug = debug.lower() in ["true", "1"]
             self.setDebugMode(debug)
-            logger.debug("Initializing Prism %s - args: %s  - python: %s" % (self.version, self.prismArgs, sys.version.split(" (")[0]))
+            logger.debug("Initializing EEFA Prism %s - args: %s  - python: %s" % (self.version, self.prismArgs, sys.version.split(" (")[0]))
 
             self.useOnTop = self.getConfig("globals", "use_always_on_top")
             if self.useOnTop is None:
@@ -334,7 +334,7 @@ class PrismCore:
             #show_login_window()
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            erStr = "%s ERROR - PrismCore init %s:\n%s\n\n%s" % (
+            erStr = "%s ERROR - EEFA PrismCore init %s:\n%s\n\n%s" % (
                 time.strftime("%d/%m/%y %X"),
                 self.version,
                 "".join(traceback.format_stack()),
