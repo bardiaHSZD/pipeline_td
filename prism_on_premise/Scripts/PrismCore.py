@@ -1151,7 +1151,7 @@ License: GNU LGPL-3.0-or-later<br>
 
     @err_catcher(name=__name__)
     def projectBrowser(self, openUi=True):
-        show_login_window()
+        #show_login_window()
         if not self.projects.ensureProject(openUi="projectBrowser"):
             return False
 

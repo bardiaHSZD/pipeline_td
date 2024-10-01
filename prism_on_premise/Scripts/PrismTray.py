@@ -202,7 +202,7 @@ class PrismTray:
     def startBrowser(self):
         
         # Show login window at the start
-        #self.show_login_window()
+        self.show_login_window()
 
         if self.launching:
             logger.debug("Launching in progress. Skipped opening Project Browser")
