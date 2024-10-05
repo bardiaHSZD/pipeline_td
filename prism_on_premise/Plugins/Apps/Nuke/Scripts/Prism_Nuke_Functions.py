@@ -132,9 +132,9 @@ class Prism_Nuke_Functions(object):
 
     @err_catcher(name=__name__)
     def addMenus(self):
-        nuke.menu("Nuke").addCommand("Prism/Save", self.saveScene, "Ctrl+s")
-        nuke.menu("Nuke").addCommand("Prism/Save Version", self.core.saveScene, "Alt+Shift+s")
-        nuke.menu("Nuke").addCommand("Prism/Save Comment...", self.core.saveWithComment, "Ctrl+Shift+S")
+        nuke.menu("Nuke").addCommand("Prism/Save", self.saveScene, "Shift+D")
+        nuke.menu("Nuke").addCommand("Prism/Save Version", self.core.saveScene, "Alt+Shift+D")
+        nuke.menu("Nuke").addCommand("Prism/Save Comment...", self.core.saveWithComment, "Ctrl+Shift+D")
         nuke.menu("Nuke").addCommand("Prism/Project Browser...", self.core.projectBrowser)
         nuke.menu("Nuke").addCommand("Prism/Settings...", self.core.prismSettings)
         nuke.menu("Nuke").addCommand(
@@ -148,7 +148,7 @@ class Prism_Nuke_Functions(object):
         )
         toolbar.addMenu("Prism", icon=iconPath)
         toolbar.addCommand("Prism/ReadPrism", lambda: nuke.createNode("ReadPrism"))
-        toolbar.addCommand("Prism/WritePrism", lambda: nuke.createNode("WritePrism"), "w", shortcutContext=2)
+        toolbar.addCommand("Prism/WritePrism", lambda: nuke.createNode("WritePrism"), "Shift+W", shortcutContext=2)
 
     @err_catcher(name=__name__)
     def addCallbacks(self):
