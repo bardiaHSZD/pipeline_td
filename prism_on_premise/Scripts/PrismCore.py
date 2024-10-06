@@ -187,7 +187,7 @@ class PrismCore:
 
         try:
             # set some general variables
-            self.version = "1.0.0"#"v2.0.10"
+            self.version = "1.0.1"#"v2.0.10"
             self.requiredLibraries = "v2.0.0"
             self.core = self
             self.preferredExtension = os.getenv("PRISM_CONFIG_EXTENSION", ".json")
