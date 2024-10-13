@@ -64,22 +64,37 @@ class AssetBrowser(QMainWindow):
         center_layout.addWidget(self.asset_scroll)
         main_layout.addLayout(center_layout, 3)  # Asset Grid gets more space (2/3)
 
-        # Pagination controls (next and previous buttons)
+        # Pagination controls (next and previous buttons, page display)
         self.current_page = 0
         self.total_assets = 0
 
         pagination_layout = QHBoxLayout()
         self.prev_button = QPushButton("Previous")
-        self.next_button = QPushButton("Next")
         self.prev_button.clicked.connect(self.prev_page)
+
+        self.page_number_input = QLineEdit()
+        self.page_number_input.setFixedWidth(40)  # Set width for page number input
+        self.page_number_input.setAlignment(Qt.AlignCenter)
+        self.page_number_input.setText(str(self.current_page + 1))
+        self.page_number_input.returnPressed.connect(self.jump_to_page)
+
+        self.total_pages_label = QLabel("/ 1")  # Default label for total number of pages
+
+        self.next_button = QPushButton("Next")
         self.next_button.clicked.connect(self.next_page)
+
+        # Add widgets to the pagination layout
         pagination_layout.addWidget(self.prev_button)
+        pagination_layout.addWidget(QLabel("Page:"))
+        pagination_layout.addWidget(self.page_number_input)
+        pagination_layout.addWidget(self.total_pages_label)
         pagination_layout.addWidget(self.next_button)
 
         center_layout.addLayout(pagination_layout)
 
         # Load assets from the folder
         self.asset_files = self.load_assets()
+        self.update_total_pages()
         self.display_assets()
 
         # 3. Right Panel - Asset Preview and Metadata
@@ -88,7 +103,7 @@ class AssetBrowser(QMainWindow):
         # Preview Image
         self.preview_label = QLabel("Preview")
         self.preview_label.setAlignment(Qt.AlignCenter)
-        self.preview_label.setFixedSize(200, 200)  # Placeholder for preview image
+        self.preview_label.setFixedSize(300, 300)  # Placeholder for preview image
         self.preview_label.setStyleSheet("border: 1px solid #ccc;")
         preview_layout.addWidget(self.preview_label)
 
@@ -160,11 +175,11 @@ class AssetBrowser(QMainWindow):
         # Load and display each asset on the current page
         for idx, asset_file in enumerate(self.asset_files[start_index:end_index]):
             asset_path = os.path.join('assets/', asset_file)
-            pixmap = QPixmap(asset_path).scaled(150, 150, Qt.KeepAspectRatio)  # Dynamically sized thumbnails
+            pixmap = QPixmap(asset_path).scaled(300, 300, Qt.KeepAspectRatio)  # Double the size of thumbnails
             asset_label = QLabel()
             asset_label.setPixmap(pixmap)
             asset_label.setAlignment(Qt.AlignCenter)
-            asset_label.setFixedSize(QSize(200, 200))  # Dynamically set the grid item size
+            asset_label.setFixedSize(QSize(350, 350))  # Set the size of each grid item
             asset_label.setStyleSheet("border: 1px solid #ccc; padding: 10px;")
             asset_label.setToolTip(asset_file)
 
@@ -177,12 +192,15 @@ class AssetBrowser(QMainWindow):
             # Add the asset to the grid layout (2 columns, 3 rows visible at a time)
             self.asset_grid_layout.addWidget(asset_label, idx // 2, idx % 2)  # 2 columns per row
 
+        # Update the current page display
+        self.page_number_input.setText(str(self.current_page + 1))
+
     def show_asset_preview(self, asset_file):
         """Shows the selected asset in the preview section."""
         asset_path = os.path.join('assets/', asset_file)
 
         # Set the preview image
-        pixmap = QPixmap(asset_path).scaled(200, 200, Qt.KeepAspectRatio)
+        pixmap = QPixmap(asset_path).scaled(300, 300, Qt.KeepAspectRatio)
         self.preview_label.setPixmap(pixmap)
 
         # Set metadata (In a real app, you'd load this from a database or file)
@@ -202,6 +220,25 @@ class AssetBrowser(QMainWindow):
         if self.current_page > 0:
             self.current_page -= 1
             self.display_assets()
+
+    def jump_to_page(self):
+        """Jump to the page specified by the user in the page number input."""
+        try:
+            page_number = int(self.page_number_input.text()) - 1
+            if 0 <= page_number < self.get_total_pages():
+                self.current_page = page_number
+                self.display_assets()
+        except ValueError:
+            pass  # Ignore invalid input
+
+    def update_total_pages(self):
+        """Updates the total pages label based on the number of assets."""
+        total_pages = self.get_total_pages()
+        self.total_pages_label.setText(f"/ {total_pages}")
+
+    def get_total_pages(self):
+        """Returns the total number of pages based on the number of assets."""
+        return max(1, (self.total_assets + ASSETS_PER_PAGE - 1) // ASSETS_PER_PAGE)
 
     def eventFilter(self, obj, event):
         """Event filter to dynamically resize grid items based on window size."""
