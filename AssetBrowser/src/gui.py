@@ -1,7 +1,7 @@
-import os  # Import os module for file and directory operations
-from PySide6.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QFormLayout, QLabel, QLineEdit, QComboBox, QPushButton
-from PySide6.QtGui import QPixmap  # Import QPixmap for handling images
-from PySide6.QtCore import Qt  # Import Qt for alignment
+import os
+from PySide6.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QFormLayout, QLabel, QLineEdit, QComboBox, QPushButton, QMessageBox, QDialog, QVBoxLayout, QDialogButtonBox
+from PySide6.QtGui import QPixmap, QGuiApplication
+from PySide6.QtCore import Qt
 from file_view import FileView
 from asset_grid import AssetGrid
 from pagination import Pagination
@@ -16,13 +16,23 @@ class AssetBrowser(QMainWindow):
         # Initialize attributes for pagination
         self.current_page = 0
         self.total_assets = 0
+        self.selected_folders = []  # Track all selected folders
+        self.selected_asset_file = None  # Track the selected asset file for sharing
 
         # Main layout setup
         main_layout = QHBoxLayout()
 
-        # 1. Left Panel - Folder Structure (Tree View)
+        # 1. Left Panel - Folder Structure (Tree View) with checkboxes and a Refresh Button
+        left_layout = QVBoxLayout()
         self.file_view = FileView('assets/')
-        main_layout.addWidget(self.file_view, 1)  # 1/4th of the width
+        left_layout.addWidget(self.file_view)
+        
+        # Refresh button
+        self.refresh_button = QPushButton("Refresh")
+        self.refresh_button.clicked.connect(self.refresh_assets)
+        left_layout.addWidget(self.refresh_button)
+
+        main_layout.addLayout(left_layout, 1)
 
         # 2. Center Panel - Asset Grid View with Pagination
         center_layout = QVBoxLayout()
@@ -39,7 +49,7 @@ class AssetBrowser(QMainWindow):
         self.pagination = Pagination(self.asset_grid, self)
         center_layout.addLayout(self.pagination.layout)
 
-        main_layout.addLayout(center_layout, 3)  # 3/4th width for asset grid and pagination
+        main_layout.addLayout(center_layout, 3)
 
         # Right Panel - Asset Preview and Metadata
         preview_layout = self.create_preview_layout()
@@ -50,16 +60,37 @@ class AssetBrowser(QMainWindow):
         container.setLayout(main_layout)
         self.setCentralWidget(container)
 
-        # Load assets from the folder
-        self.asset_files = self.load_assets()
-        self.total_assets = len(self.asset_files)  # Update total assets count
-        self.pagination.update_grid()  # Load the first page of assets
+        # Initially, show nothing in the grid (no folder selected)
+        self.asset_files = []
+        self.total_assets = 0
+        self.pagination.update_grid()
 
-    def load_assets(self):
-        """Loads image assets from the 'assets/' folder."""
-        assets_folder = 'assets/'  # Specify the folder where your images are stored
-        asset_files = [f for f in os.listdir(assets_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+    def load_assets(self, folder_paths):
+        """Loads image assets from the given folders and their subfolders."""
+        asset_files = []
+        for folder_path in folder_paths:
+            for root, _, files in os.walk(folder_path):
+                for file in files:
+                    if file.lower().endswith(('.png', '.jpg', '.jpeg')):
+                        asset_files.append(os.path.join(root, file))
         return asset_files
+
+    def refresh_assets(self):
+        """Handles refreshing of asset grid based on selected folders."""
+        # Clear the currently selected folders
+        self.selected_folders = self.file_view.get_selected_folders()  # Get selected folders
+
+        if not self.selected_folders:
+            # No folder selected, clear the grid
+            self.asset_files = []
+            self.total_assets = 0
+            self.pagination.update_grid()
+        else:
+            # Load assets from all selected folders
+            self.asset_files = self.load_assets(self.selected_folders)
+            self.total_assets = len(self.asset_files)
+            self.current_page = 0  # Reset pagination to the first page
+            self.pagination.update_grid()
 
     def create_search_layout(self):
         """Creates the search and filter layout."""
@@ -117,11 +148,12 @@ class AssetBrowser(QMainWindow):
         preview_layout.addWidget(self.tags_label)
         preview_layout.addWidget(self.tags_input)
 
-        # Buttons for "Open" and "Open in Explorer"
+        # Buttons for "Share" and "Open in Explorer"
         button_layout = QHBoxLayout()
-        self.open_button = QPushButton("Open")
+        self.share_button = QPushButton("Share")
+        self.share_button.clicked.connect(self.share_asset)  # Connect to share action
         self.open_explorer_button = QPushButton("Open in Explorer")
-        button_layout.addWidget(self.open_button)
+        button_layout.addWidget(self.share_button)
         button_layout.addWidget(self.open_explorer_button)
 
         preview_layout.addLayout(button_layout)
@@ -130,14 +162,67 @@ class AssetBrowser(QMainWindow):
 
     def show_asset_preview(self, asset_file):
         """Shows the selected asset in the preview section."""
-        asset_path = os.path.join('assets/', asset_file)
+        asset_path = os.path.join(asset_file)  # Get the full path to the asset
+        self.selected_asset_file = asset_path  # Store the selected asset for sharing
 
-        # Set the preview image
-        pixmap = QPixmap(asset_path).scaled(300, 300, Qt.KeepAspectRatio)
-        self.preview_label.setPixmap(pixmap)
+        # Check if the image exists before attempting to display it
+        if not os.path.exists(asset_path):
+            self.preview_label.setText("No preview available")
+            return
+
+        # Load the image into a QPixmap and scale it for the preview
+        pixmap = QPixmap(asset_path)
+        if pixmap.isNull():
+            self.preview_label.setText("Error loading preview")
+        else:
+            pixmap = pixmap.scaled(300, 300, Qt.KeepAspectRatio)
+            self.preview_label.setPixmap(pixmap)
 
         # Set metadata (In a real app, you'd load this from a database or file)
         self.metadata_label.setText(asset_file)
         self.version_label.setText("Version: 1")
         self.production_label.setText("Production: Bunderkin")
         self.client_label.setText("Client: None")
+
+    def share_asset(self):
+        """Displays a window with the asset path and a copy to clipboard button."""
+        if not self.selected_asset_file:
+            QMessageBox.warning(self, "No Asset Selected", "Please select an asset to share.")
+            return
+
+        # Convert the relative path to an absolute path and normalize it for Windows
+        full_path = os.path.abspath(self.selected_asset_file)
+        full_path = os.path.normpath(full_path)  # Normalize the path to use backslashes for Windows
+
+        # Create a dialog window to show the path and allow copying
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Share Asset Path")
+        dialog_layout = QVBoxLayout()
+
+        # Show the full path of the selected asset
+        path_label = QLabel(f"Full path:\n{full_path}")
+        dialog_layout.addWidget(path_label)
+
+        # Create the "Copy to Clipboard" and "OK" buttons
+        button_box = QDialogButtonBox()
+
+        # Copy to Clipboard button
+        copy_button = QPushButton("Copy to Clipboard")
+        copy_button.clicked.connect(lambda: self.copy_to_clipboard(full_path))
+        button_box.addButton(copy_button, QDialogButtonBox.ActionRole)  # Add copy button to the left
+
+        # OK button to close the dialog
+        ok_button = button_box.addButton(QDialogButtonBox.Ok)
+        ok_button.clicked.connect(dialog.accept)  # Close the dialog when OK is pressed
+
+        # Add buttons to the layout
+        dialog_layout.addWidget(button_box)
+
+        dialog.setLayout(dialog_layout)
+        dialog.exec()
+
+    def copy_to_clipboard(self, text):
+        """Copies the provided text to the system clipboard."""
+        clipboard = QGuiApplication.clipboard()
+        clipboard.setText(text)
+        QMessageBox.information(self, "Copied", "Asset path copied to clipboard!")

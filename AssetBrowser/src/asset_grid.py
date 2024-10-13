@@ -26,10 +26,21 @@ class AssetGrid:
             if widget:
                 widget.deleteLater()
 
+        # Reset the selected label as we are reloading the grid
+        self.selected_label = None
+
         # Load and display each asset on the current page
         for idx, asset_file in enumerate(assets[start_index:end_index]):
-            asset_path = os.path.join('assets/', asset_file)
-            pixmap = QPixmap(asset_path).scaled(300, 300, Qt.KeepAspectRatio)
+            asset_path = os.path.join(asset_file)
+            if not os.path.exists(asset_path):
+                continue  # Skip if the image file doesn't exist
+
+            pixmap = QPixmap(asset_path)
+            if pixmap.isNull():
+                print(f"Error loading image: {asset_path}")
+                continue  # Skip if the pixmap couldn't be loaded
+
+            pixmap = pixmap.scaled(300, 300, Qt.KeepAspectRatio)
 
             asset_label = QLabel()
             asset_label.setPixmap(pixmap)
@@ -49,9 +60,13 @@ class AssetGrid:
 
     def select_asset(self, label, parent):
         """Handles the selection of an asset."""
-        # Reset the border of the previously selected thumbnail
-        if self.selected_label:
-            self.selected_label.setStyleSheet("border: 1px solid #ccc; padding: 10px;")
+        # Check if the previously selected label is valid and exists
+        if self.selected_label and self.selected_label is not label:
+            # Reset the border of the previously selected thumbnail
+            try:
+                self.selected_label.setStyleSheet("border: 1px solid #ccc; padding: 10px;")
+            except RuntimeError:
+                self.selected_label = None
 
         # Set the border of the new selected thumbnail to orange
         label.setStyleSheet("border: 3px solid orange; padding: 10px;")

@@ -1,65 +1,76 @@
-from PySide6.QtWidgets import QHBoxLayout, QLabel, QLineEdit, QPushButton
-from PySide6.QtCore import Qt  # Import Qt for alignment
-
-ASSETS_PER_PAGE = 12
+from PySide6.QtWidgets import QHBoxLayout, QPushButton, QLabel, QLineEdit
 
 class Pagination:
     def __init__(self, asset_grid, parent):
         self.asset_grid = asset_grid
         self.parent = parent
+        self.current_page = 0
+        self.items_per_page = 6  # Define how many items you want per page
 
+        # Create the pagination layout with Previous, Page Number, and Next buttons
         self.layout = QHBoxLayout()
 
-        # Pagination controls
-        self.prev_button = QPushButton("Previous")
-        self.prev_button.clicked.connect(self.prev_page)
+        # Previous button
+        self.previous_button = QPushButton("Previous")
+        self.previous_button.clicked.connect(self.previous_page)
+        self.layout.addWidget(self.previous_button)
 
+        # Page number display
+        self.page_label = QLabel(f"Page: {self.current_page + 1}")
+        self.layout.addWidget(self.page_label)
+
+        # Page number input (jump to page)
         self.page_number_input = QLineEdit()
         self.page_number_input.setFixedWidth(40)
-        self.page_number_input.setAlignment(Qt.AlignCenter)  # Use Qt.AlignCenter for alignment
-        self.page_number_input.setText(str(self.parent.current_page + 1))
+        self.page_number_input.setText(str(self.current_page + 1))
         self.page_number_input.returnPressed.connect(self.jump_to_page)
+        self.layout.addWidget(self.page_number_input)
 
-        self.total_pages_label = QLabel("/ 1")
+        # Total pages label
+        self.total_pages_label = QLabel(f"of {self.get_total_pages()} pages")
+        self.layout.addWidget(self.total_pages_label)
 
+        # Next button
         self.next_button = QPushButton("Next")
         self.next_button.clicked.connect(self.next_page)
-
-        # Add widgets to the layout
-        self.layout.addWidget(self.prev_button)
-        self.layout.addWidget(QLabel("Page:"))
-        self.layout.addWidget(self.page_number_input)
-        self.layout.addWidget(self.total_pages_label)
         self.layout.addWidget(self.next_button)
 
-    def prev_page(self):
-        if self.parent.current_page > 0:
-            self.parent.current_page -= 1
-            self.update_grid()
+    def get_total_pages(self):
+        """Calculate the total number of pages based on the total assets and items per page."""
+        if self.parent.total_assets == 0:
+            return 1
+        return (self.parent.total_assets + self.items_per_page - 1) // self.items_per_page
+
+    def update_grid(self):
+        """Update the asset grid with assets from the current page."""
+        start_index = self.current_page * self.items_per_page
+        end_index = min(start_index + self.items_per_page, self.parent.total_assets)
+        self.asset_grid.load_assets(self.parent.asset_files, start_index, end_index, self.parent)
+        self.page_label.setText(f"Page: {self.current_page + 1}")
+        self.page_number_input.setText(str(self.current_page + 1))
+        self.total_pages_label.setText(f"of {self.get_total_pages()} pages")
 
     def next_page(self):
-        if (self.parent.current_page + 1) * ASSETS_PER_PAGE < self.parent.total_assets:
-            self.parent.current_page += 1
+        """Go to the next page, if available."""
+        if (self.current_page + 1) * self.items_per_page < self.parent.total_assets:
+            self.current_page += 1
+            self.update_grid()
+
+    def previous_page(self):
+        """Go to the previous page, if available."""
+        if self.current_page > 0:
+            self.current_page -= 1
             self.update_grid()
 
     def jump_to_page(self):
-        """Jump to the page specified by the user in the page number input."""
+        """Jump to a specific page based on user input."""
         try:
             page_number = int(self.page_number_input.text()) - 1
-            if 0 <= page_number < self.get_total_pages():
-                self.parent.current_page = page_number
+            total_pages = self.get_total_pages()
+            if 0 <= page_number < total_pages:
+                self.current_page = page_number
                 self.update_grid()
+            else:
+                self.page_number_input.setText(str(self.current_page + 1))  # Reset to current page if invalid input
         except ValueError:
-            pass  # Ignore invalid input
-
-    def update_grid(self):
-        """Update the grid view to display assets for the current page."""
-        start_index = self.parent.current_page * ASSETS_PER_PAGE
-        end_index = min(start_index + ASSETS_PER_PAGE, self.parent.total_assets)
-        self.asset_grid.load_assets(self.parent.asset_files, start_index, end_index, self.parent)
-        self.page_number_input.setText(str(self.parent.current_page + 1))
-        self.total_pages_label.setText(f"/ {self.get_total_pages()}")
-
-    def get_total_pages(self):
-        """Returns the total number of pages based on the number of assets."""
-        return max(1, (self.parent.total_assets + ASSETS_PER_PAGE - 1) // ASSETS_PER_PAGE)
+            self.page_number_input.setText(str(self.current_page + 1))  # Reset to current page if invalid input
