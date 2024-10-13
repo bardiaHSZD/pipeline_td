@@ -1,4 +1,5 @@
 import os
+import subprocess  # Import subprocess to open file explorer
 from PySide6.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QFormLayout, QLabel, QLineEdit, QComboBox, QPushButton, QMessageBox, QDialog, QVBoxLayout, QDialogButtonBox
 from PySide6.QtGui import QPixmap, QGuiApplication
 from PySide6.QtCore import Qt
@@ -153,6 +154,7 @@ class AssetBrowser(QMainWindow):
         self.share_button = QPushButton("Share")
         self.share_button.clicked.connect(self.share_asset)  # Connect to share action
         self.open_explorer_button = QPushButton("Open in Explorer")
+        self.open_explorer_button.clicked.connect(self.open_in_explorer)  # Connect to open in explorer action
         button_layout.addWidget(self.share_button)
         button_layout.addWidget(self.open_explorer_button)
 
@@ -226,3 +228,21 @@ class AssetBrowser(QMainWindow):
         clipboard = QGuiApplication.clipboard()
         clipboard.setText(text)
         QMessageBox.information(self, "Copied", "Asset path copied to clipboard!")
+
+    def open_in_explorer(self):
+        """
+        Opens the selected asset in the file explorer and selects the file.
+        """
+        if not self.selected_asset_file:
+            QMessageBox.warning(self, "No Asset Selected", "Please select an asset to open in explorer.")
+            return
+
+        # Convert the relative path to an absolute path
+        full_path = os.path.abspath(self.selected_asset_file)
+
+        # Use subprocess to open the file explorer and select the file
+        try:
+            subprocess.run(['explorer', '/select,', full_path])
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Could not open file in explorer: {str(e)}")
+
