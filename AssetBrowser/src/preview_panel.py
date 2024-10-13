@@ -1,14 +1,26 @@
 import os
 import subprocess
-from PySide6.QtWidgets import QVBoxLayout, QLabel, QFormLayout, QLineEdit, QPushButton, QHBoxLayout, QMessageBox, QDialog, QDialogButtonBox
+from PySide6.QtWidgets import QVBoxLayout, QLabel, QFormLayout, QLineEdit, QPushButton, QHBoxLayout, QMessageBox, QDialog, QDialogButtonBox, QScrollArea, QWidget
 from PySide6.QtGui import QPixmap, QGuiApplication
 from PySide6.QtCore import Qt
 
 
-class PreviewPanel:
+class PreviewPanel(QWidget):
     def __init__(self, parent):
+        super().__init__(parent)
         self.parent = parent
-        self.preview_label = QLabel("Preview")
+        self.scale_factor = 1.0  # Initial scale factor for zooming
+
+        # Create scroll area for preview image
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidgetResizable(True)
+
+        # Label to hold the preview image
+        self.preview_label = QLabel()
+        self.preview_label.setAlignment(Qt.AlignCenter)
+        self.scroll_area.setWidget(self.preview_label)
+
+        # Metadata fields
         self.metadata_label = QLabel("No asset selected")
         self.version_label = QLabel("Version: N/A")
         self.production_label = QLabel("Production: N/A")
@@ -16,13 +28,11 @@ class PreviewPanel:
         self.tags_input = QLineEdit()
 
     def create_preview_layout(self):
+        """Creates the preview layout with scroll and zoom support."""
         preview_layout = QVBoxLayout()
 
-        # Preview Image
-        self.preview_label.setAlignment(Qt.AlignCenter)
-        self.preview_label.setFixedSize(400, 400)  # Increase the size of the preview image
-        self.preview_label.setStyleSheet("")  # Remove the white border
-        preview_layout.addWidget(self.preview_label)
+        # Add the scroll area containing the preview label
+        preview_layout.addWidget(self.scroll_area)
 
         # Metadata and Details Section
         metadata_layout = QFormLayout()
@@ -51,23 +61,38 @@ class PreviewPanel:
         return preview_layout
 
     def show_asset_preview(self, asset_file):
-        """Shows the selected asset in the preview section."""
-        # Convert the relative path to an absolute path
+        """Displays the selected asset image in the preview section."""
         asset_path = os.path.abspath(asset_file)
 
-        # Load the image into a QPixmap and scale it for the preview
         pixmap = QPixmap(asset_path)
         if pixmap.isNull():
             self.preview_label.setText("Error loading preview")
         else:
-            pixmap = pixmap.scaled(400, 400, Qt.KeepAspectRatio)  # Larger size
-            self.preview_label.setPixmap(pixmap)
+            self.scale_factor = 1.0  # Reset zoom when a new image is loaded
+            self.preview_label.setPixmap(pixmap.scaled(400, 400, Qt.KeepAspectRatio))
 
         # Set metadata (In a real app, you'd load this from a database or file)
         self.metadata_label.setText(os.path.basename(asset_file))
         self.version_label.setText("Version: 1")
         self.production_label.setText("Production: Bunderkin")
         self.client_label.setText("Client: None")
+
+    def zoom_in(self):
+        """Zoom in the preview image."""
+        self.scale_factor *= 1.1  # Increase scale by 10%
+        self.update_preview_image()
+
+    def zoom_out(self):
+        """Zoom out the preview image."""
+        self.scale_factor /= 1.1  # Decrease scale by 10%
+        self.update_preview_image()
+
+    def update_preview_image(self):
+        """Update the preview image with the current scale factor."""
+        pixmap = self.preview_label.pixmap()
+        if pixmap:
+            scaled_pixmap = pixmap.scaled(self.scale_factor * pixmap.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.preview_label.setPixmap(scaled_pixmap)
 
     def share_asset(self):
         """Displays a window with the asset path and a copy to clipboard button."""
