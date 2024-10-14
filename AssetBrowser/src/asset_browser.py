@@ -84,7 +84,7 @@ class AssetBrowser(QMainWindow):
         self.search_input.setCompleter(self.completer)
 
     def create_search_layout(self):
-        """Creates the search and filter layout with search, exclude, and dropdowns."""
+        """Creates the search and filter layout with search and tags input."""
         search_layout = QHBoxLayout()
 
         # Search input
@@ -93,12 +93,12 @@ class AssetBrowser(QMainWindow):
         self.search_input.textChanged.connect(self.update_completer)  # Update completer on typing
         search_layout.addWidget(self.search_input)
 
-        # Exclude input
-        self.exclude_input = QLineEdit()
-        self.exclude_input.setPlaceholderText("Exclude")
-        search_layout.addWidget(self.exclude_input)
+        # Tags input (replacing the Exclude input)
+        self.tags_input = QLineEdit()
+        self.tags_input.setPlaceholderText("Tags")
+        search_layout.addWidget(self.tags_input)
 
-        # Search button (replacing the production dropdown)
+        # Search button
         self.search_button = QPushButton("Search")
         self.search_button.clicked.connect(self.filter_assets)  # Trigger search on button click
         search_layout.addWidget(self.search_button)
@@ -129,6 +129,9 @@ class AssetBrowser(QMainWindow):
     def refresh_assets(self):
         """Handles refreshing of asset grid based on selected folders."""
         self.selected_folders = self.file_view.get_selected_folders()  # Get selected folders
+
+        # Clear the search input when refreshing
+        self.search_input.clear()  # Clear the search text field
 
         if not self.selected_folders:
             # No folder selected, clear the grid
@@ -218,5 +221,6 @@ class AssetBrowser(QMainWindow):
         # Get suggestions from the Trie
         suggestions = self.trie.search(search_text)
 
-        # Set the top 12 suggestions for the completer
+        # Set the top 12 suggestions for the completer, without file extensions
+        suggestions = [os.path.splitext(suggestion)[0] for suggestion in suggestions]
         self.completer_model.setStringList(suggestions[:12])

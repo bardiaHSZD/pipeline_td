@@ -1,8 +1,24 @@
 import os
 import subprocess
-from PySide6.QtWidgets import QVBoxLayout, QLabel, QFormLayout, QLineEdit, QPushButton, QHBoxLayout, QMessageBox, QDialog, QDialogButtonBox, QScrollArea, QWidget
+import json
+from PySide6.QtWidgets import QVBoxLayout, QLabel, QFormLayout, QPushButton, QHBoxLayout, QMessageBox, QDialog, QDialogButtonBox, QScrollArea, QWidget
 from PySide6.QtGui import QPixmap, QGuiApplication
 from PySide6.QtCore import Qt
+
+
+def load_json_metadata(json_file_path):
+    """Load metadata from the specified JSON file."""
+    if not os.path.exists(json_file_path):
+        return "N/A", "N/A"  # Return default values if the file does not exist
+
+    with open(json_file_path, 'r') as json_file:
+        data = json.load(json_file)
+
+    version = data.get("version", "N/A")  # Get the version
+    global_path = data.get("locations", {}).get("global", "")
+    extension = os.path.splitext(global_path)[1] if global_path else "N/A"  # Get the file extension from global path
+
+    return version, extension
 
 
 class PreviewPanel(QWidget):
@@ -23,9 +39,7 @@ class PreviewPanel(QWidget):
         # Metadata fields
         self.metadata_label = QLabel("No asset selected")
         self.version_label = QLabel("Version: N/A")
-        self.production_label = QLabel("Production: N/A")
-        self.client_label = QLabel("Client: N/A")
-        self.tags_input = QLineEdit()
+        self.extension_label = QLabel("Extension: N/A")  # Added for displaying the extension
 
     def create_preview_layout(self):
         """Creates the preview layout with scroll and zoom support."""
@@ -38,14 +52,9 @@ class PreviewPanel(QWidget):
         metadata_layout = QFormLayout()
         metadata_layout.addRow("Asset Name:", self.metadata_label)
         metadata_layout.addRow("Version:", self.version_label)
-        metadata_layout.addRow("Production:", self.production_label)
-        metadata_layout.addRow("Client:", self.client_label)
+        metadata_layout.addRow("Extension:", self.extension_label)  # Display extension
 
         preview_layout.addLayout(metadata_layout)
-
-        # Tags Section
-        preview_layout.addWidget(QLabel("Tags:"))
-        preview_layout.addWidget(self.tags_input)
 
         # Buttons for "Share" and "Open in Explorer"
         button_layout = QHBoxLayout()
@@ -69,13 +78,18 @@ class PreviewPanel(QWidget):
             self.preview_label.setText("Error loading preview")
         else:
             self.scale_factor = 1.0  # Reset zoom when a new image is loaded
-            self.preview_label.setPixmap(pixmap.scaled(400, 400, Qt.KeepAspectRatio))
+            self.preview_label.setPixmap(pixmap.scaled(400, 200, Qt.KeepAspectRatio))  # Reduced height to 200
 
-        # Set metadata (In a real app, you'd load this from a database or file)
-        self.metadata_label.setText(os.path.basename(asset_file))
-        self.version_label.setText("Version: 1")
-        self.production_label.setText("Production: Bunderkin")
-        self.client_label.setText("Client: None")
+        # Load metadata from the corresponding JSON file
+        json_file_path = f"{os.path.splitext(asset_file)[0]}versioninfo.json"  # Construct the JSON file path
+        version, extension = load_json_metadata(json_file_path)  # Load version and extension
+
+        # Set metadata
+        asset_name = os.path.basename(asset_file)
+        asset_name_without_extension = os.path.splitext(asset_name)[0]  # Remove the file extension
+        self.metadata_label.setText(asset_name_without_extension)
+        self.version_label.setText(f"{version}")
+        self.extension_label.setText(f"{extension}")  # Display extension
 
     def zoom_in(self):
         """Zoom in the preview image."""
