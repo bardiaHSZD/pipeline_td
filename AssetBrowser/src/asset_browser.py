@@ -155,7 +155,7 @@ class AssetBrowser(QMainWindow):
 
     def load_next_chunk(self, start_index, end_index):
         """Load the next chunk of assets for the current page and update the progress bar."""
-        chunk_end = min(start_index + self.loaded_assets + 4, end_index)
+        chunk_end = min(start_index + self.loaded_assets + 12, end_index)
 
         # Load the assets for this chunk into the grid
         self.asset_grid.load_assets(self.asset_files, start_index + self.loaded_assets, chunk_end, self)

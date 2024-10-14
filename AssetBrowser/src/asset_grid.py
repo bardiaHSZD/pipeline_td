@@ -34,8 +34,6 @@ class AssetGrid:
                 row = index // max_cols
                 col = index % max_cols
 
-                print(f"row: {row}, col: {col}")  # Debugging statement to track grid placement
-
                 # Create and add the QLabel for each asset
                 pixmap = QPixmap(asset_file).scaled(200, 200, Qt.KeepAspectRatio)
                 asset_label = QLabel()

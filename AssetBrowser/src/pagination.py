@@ -7,7 +7,7 @@ class Pagination:
         self.asset_grid = asset_grid
         self.parent = parent
 
-        self.items_per_page = 12  # 12 items per page (4 rows x 3 columns)
+        self.items_per_page = 12 #items per page (4 rows x 3 columns)
         self.layout = QHBoxLayout()
 
         # Previous button
