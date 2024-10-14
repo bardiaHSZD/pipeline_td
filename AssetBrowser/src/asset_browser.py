@@ -1,6 +1,6 @@
 import os
 from PySide6.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QProgressBar, QPushButton, QLineEdit, QComboBox, QCompleter
-from PySide6.QtCore import QTimer, QStringListModel, Qt  # Add Qt for CaseInsensitive
+from PySide6.QtCore import QTimer, QStringListModel, Qt
 from file_view import FileView
 from asset_grid import AssetGrid
 from pagination import Pagination
