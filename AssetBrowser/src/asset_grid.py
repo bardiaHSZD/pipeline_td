@@ -13,16 +13,15 @@ class AssetGrid:
         self.grid_layout = QGridLayout(self.grid_widget)
         self.asset_scroll.setWidget(self.grid_widget)
 
-        self.selected_label = None
+        self.selected_label = None  # Track the currently selected QLabel
 
     def load_assets(self, asset_files, start_index, end_index, parent):
         """Load assets into the grid view."""
-        # Clear the grid before loading new assets
+        # Clear the grid and reset selected_label when switching pages
         self.clear_grid()
 
         # Maximum 3 columns per row and 4 rows per page (12 items per page)
-        max_cols = 3  # 3 columns
-        max_rows = 4  # 4 rows (for a total of 12 items per page)
+        max_cols = 3
         total_items = end_index - start_index
 
         # Loop through the assets and add them to the grid
@@ -45,17 +44,24 @@ class AssetGrid:
                 self.grid_layout.addWidget(asset_label, row, col, alignment=Qt.AlignCenter)
 
     def clear_grid(self):
-        """Remove all items from the grid layout."""
+        """Remove all items from the grid layout and reset selected_label."""
         for i in reversed(range(self.grid_layout.count())):
             widget = self.grid_layout.itemAt(i).widget()
             if widget is not None:
                 widget.deleteLater()
 
+        # Reset the selected label to None when switching pages
+        self.selected_label = None
+
     def select_asset(self, asset_file, label, parent):
         """Select an asset and highlight it."""
-        if self.selected_label:
+        # Check if there was a previous selection and reset its border
+        if self.selected_label is not None:
             self.selected_label.setStyleSheet("border: none; padding: 10px;")
 
+        # Set the newly selected label and update its border
         self.selected_label = label
         label.setStyleSheet("border: 2px solid orange; padding: 10px;")
+
+        # Show the asset preview in the parent widget
         parent.show_asset_preview(asset_file)

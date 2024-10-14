@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QHBoxLayout, QPushButton, QLabel, QLineEdit
+from PySide6.QtWidgets import QHBoxLayout, QPushButton, QLabel, QLineEdit, QSpacerItem, QSizePolicy
 from PySide6.QtCore import Qt
 
 
@@ -7,13 +7,17 @@ class Pagination:
         self.asset_grid = asset_grid
         self.parent = parent
 
-        self.items_per_page = 12 #items per page (4 rows x 3 columns)
+        self.items_per_page = 12  # 12 items per page (4 rows x 3 columns)
         self.layout = QHBoxLayout()
 
         # Previous button
         self.prev_button = QPushButton("Previous")
         self.prev_button.clicked.connect(self.prev_page)
         self.layout.addWidget(self.prev_button)
+
+        # Add a spacer to the left of the page number input to center it
+        self.left_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.layout.addItem(self.left_spacer)
 
         # Page number input and label
         self.page_number_input = QLineEdit()
@@ -26,6 +30,10 @@ class Pagination:
         # Page number label (total pages)
         self.page_total_label = QLabel("/ 1")
         self.layout.addWidget(self.page_total_label)
+
+        # Add a spacer to the right of the page number input to center it
+        self.right_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.layout.addItem(self.right_spacer)
 
         # Next button
         self.next_button = QPushButton("Next")
