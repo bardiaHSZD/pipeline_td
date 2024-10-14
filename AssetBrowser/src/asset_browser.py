@@ -1,10 +1,11 @@
 import os
-from PySide6.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QProgressBar, QPushButton, QLineEdit, QComboBox
+from PySide6.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QProgressBar, QPushButton, QLineEdit, QComboBox, QListWidget
 from PySide6.QtCore import QTimer
 from file_view import FileView
 from asset_grid import AssetGrid
 from pagination import Pagination
 from preview_panel import PreviewPanel
+from trie import Trie
 
 
 class AssetBrowser(QMainWindow):
@@ -15,8 +16,12 @@ class AssetBrowser(QMainWindow):
         self.setGeometry(100, 100, 1300, 800)
 
         self.current_page = 0
-        self.total_assets = 0
         self.items_per_page = 12  # Set 12 items per page (4 rows x 3 columns)
+        self.trie = Trie()  # Initialize the Trie for prefix search
+
+        self.all_asset_files = []  # Keep all loaded assets here
+        self.filtered_asset_files = []  # Keep filtered assets here
+        self.total_assets = 0
 
         # Main layout setup
         main_layout = QVBoxLayout()
@@ -68,9 +73,14 @@ class AssetBrowser(QMainWindow):
         container.setLayout(main_layout)
         self.setCentralWidget(container)
 
-        self.asset_files = []
+        self.filtered_asset_files = []
         self.total_assets = 0
         self.pagination.update_grid()
+
+        # Autocomplete list for search suggestions
+        self.suggestion_list = QListWidget()
+        self.suggestion_list.setVisible(False)
+        main_layout.addWidget(self.suggestion_list)
 
     def create_search_layout(self):
         """Creates the search and filter layout with search, exclude, and dropdowns."""
@@ -79,6 +89,7 @@ class AssetBrowser(QMainWindow):
         # Search input
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("Search")
+        self.search_input.textChanged.connect(self.show_suggestions)  # Show suggestions on typing
         search_layout.addWidget(self.search_input)
 
         # Exclude input
@@ -86,10 +97,10 @@ class AssetBrowser(QMainWindow):
         self.exclude_input.setPlaceholderText("Exclude")
         search_layout.addWidget(self.exclude_input)
 
-        # Production dropdown
-        self.production_dropdown = QComboBox()
-        self.production_dropdown.addItems(["Production", "All", "Specific Production"])
-        search_layout.addWidget(self.production_dropdown)
+        # Search button (replacing the production dropdown)
+        self.search_button = QPushButton("Search")
+        self.search_button.clicked.connect(self.filter_assets)  # Trigger search on button click
+        search_layout.addWidget(self.search_button)
 
         # Client dropdown
         self.client_dropdown = QComboBox()
@@ -112,15 +123,6 @@ class AssetBrowser(QMainWindow):
                     if file.lower().endswith(('.png', '.jpg', '.jpeg')):
                         asset_files.append(os.path.join(root, file))
 
-        # Filter the assets based on search and exclude input
-        search_term = self.search_input.text().lower()
-        exclude_term = self.exclude_input.text().lower()
-
-        if search_term:
-            asset_files = [f for f in asset_files if search_term in os.path.basename(f).lower()]
-        if exclude_term:
-            asset_files = [f for f in asset_files if exclude_term not in os.path.basename(f).lower()]
-
         return asset_files
 
     def refresh_assets(self):
@@ -129,14 +131,23 @@ class AssetBrowser(QMainWindow):
 
         if not self.selected_folders:
             # No folder selected, clear the grid
-            self.asset_files = []
+            self.all_asset_files = []
+            self.filtered_asset_files = []
             self.total_assets = 0
             self.pagination.update_grid()
         else:
             # Load assets from all selected folders
-            self.asset_files = self.load_assets(self.selected_folders)
-            self.total_assets = len(self.asset_files)
+            self.all_asset_files = self.load_assets(self.selected_folders)
+            self.filtered_asset_files = self.all_asset_files  # Initially, show all assets
+            self.total_assets = len(self.all_asset_files)
             self.current_page = 0  # Reset pagination to the first page
+
+            # Insert asset file names into the Trie for prefix search
+            self.trie = Trie()  # Clear the trie
+            for asset_file in self.all_asset_files:
+                asset_name = os.path.basename(asset_file)
+                self.trie.insert(asset_name)
+
             self.pagination.update_grid()
 
     def load_assets_in_chunks(self, start_index, end_index):
@@ -158,7 +169,7 @@ class AssetBrowser(QMainWindow):
         chunk_end = min(start_index + self.loaded_assets + 12, end_index)
 
         # Load the assets for this chunk into the grid
-        self.asset_grid.load_assets(self.asset_files, start_index + self.loaded_assets, chunk_end, self)
+        self.asset_grid.load_assets(self.filtered_asset_files, start_index + self.loaded_assets, chunk_end, self)
 
         # Update the progress bar
         self.loaded_assets = chunk_end - start_index  # Update the number of loaded assets for this page
@@ -172,3 +183,45 @@ class AssetBrowser(QMainWindow):
         """Shows the selected asset in the preview section."""
         self.preview_panel.show_asset_preview(asset_file)
         self.selected_asset_file = asset_file  # Store the selected asset for sharing or opening
+
+    def filter_assets(self):
+        """Filter assets in the grid based on the search input when Search button is clicked."""
+        search_text = self.search_input.text().lower()
+
+        if search_text == "":
+            # If the search text is empty, show all assets
+            self.filtered_asset_files = self.all_asset_files
+        else:
+            # Use the Trie to find matching assets
+            matching_assets = []
+            for asset in self.all_asset_files:
+                asset_name = os.path.basename(asset).lower()
+                if asset_name.startswith(search_text):
+                    matching_assets.append(asset)
+
+            self.filtered_asset_files = matching_assets
+
+        # Update the total number of assets and reset pagination
+        self.total_assets = len(self.filtered_asset_files)
+        self.current_page = 0
+        self.pagination.update_grid()
+
+    def show_suggestions(self):
+        """Show top 12 suggestions in a drop-down list as the user types in the search field."""
+        search_text = self.search_input.text().lower()
+
+        if search_text == "":
+            self.suggestion_list.clear()
+            self.suggestion_list.setVisible(False)
+            return
+
+        # Get suggestions from the Trie
+        suggestions = self.trie.search(search_text)
+
+        # Show the top 12 suggestions
+        self.suggestion_list.clear()
+        for suggestion in suggestions[:12]:
+            self.suggestion_list.addItem(suggestion)
+
+        # Show the suggestion list
+        self.suggestion_list.setVisible(True)
