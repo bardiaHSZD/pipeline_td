@@ -6,7 +6,7 @@ from asset_grid import AssetGrid
 from pagination import Pagination
 from preview_panel import PreviewPanel
 from trie import Trie
-
+from asset_helper import AssetHelper  # Import the helper module
 
 class AssetBrowser(QMainWindow):
     def __init__(self):
@@ -19,9 +19,10 @@ class AssetBrowser(QMainWindow):
         self.items_per_page = 12  # Set 12 items per page (4 rows x 3 columns)
         self.trie = Trie()  # Initialize the Trie for prefix search
 
+        self.asset_helper = AssetHelper()  # Initialize the helper class
         self.all_asset_files = []  # Keep all loaded assets here
         self.filtered_asset_files = []  # Keep filtered assets here
-        self.total_assets = 0
+        self.total_assets = 0  # Initialize total_assets
 
         # Main layout setup
         main_layout = QVBoxLayout()
@@ -50,7 +51,8 @@ class AssetBrowser(QMainWindow):
         self.asset_grid = AssetGrid(self)  # Pass in parent for progress bar
         center_layout.addWidget(self.asset_grid.asset_scroll)
 
-        self.pagination = Pagination(self.asset_grid, self)
+        # Initialize Pagination after total_assets is set
+        self.pagination = Pagination(self.asset_grid, self)  
         center_layout.addLayout(self.pagination.layout)
 
         top_layout.addLayout(center_layout, 3)
@@ -115,17 +117,6 @@ class AssetBrowser(QMainWindow):
 
         return search_layout
 
-    def load_assets(self, folder_paths):
-        """Load image assets from the selected folders and their subfolders."""
-        asset_files = []
-        for folder_path in folder_paths:
-            for root, _, files in os.walk(folder_path):
-                for file in files:
-                    if file.lower().endswith(('.png', '.jpg', '.jpeg')):
-                        asset_files.append(os.path.join(root, file))
-
-        return asset_files
-
     def refresh_assets(self):
         """Handles refreshing of asset grid based on selected folders."""
         self.selected_folders = self.file_view.get_selected_folders()  # Get selected folders
@@ -140,8 +131,8 @@ class AssetBrowser(QMainWindow):
             self.total_assets = 0
             self.pagination.update_grid()
         else:
-            # Load assets from all selected folders
-            self.all_asset_files = self.load_assets(self.selected_folders)
+            # Load assets using the helper
+            self.all_asset_files = self.asset_helper.load_assets(self.selected_folders)
             self.filtered_asset_files = self.all_asset_files  # Initially, show all assets
             self.total_assets = len(self.all_asset_files)
             self.current_page = 0  # Reset pagination to the first page
@@ -196,12 +187,8 @@ class AssetBrowser(QMainWindow):
             # If the search text is empty, show all assets
             self.filtered_asset_files = self.all_asset_files
         else:
-            # Use the Trie to find matching assets
-            matching_assets = []
-            for asset in self.all_asset_files:
-                asset_name = os.path.basename(asset).lower()
-                if asset_name.startswith(search_text):
-                    matching_assets.append(asset)
+            # Use the helper method to find matching assets
+            matching_assets = self.asset_helper.filter_assets_by_search(self.all_asset_files, search_text)
 
             self.filtered_asset_files = matching_assets
 
@@ -209,6 +196,21 @@ class AssetBrowser(QMainWindow):
         self.total_assets = len(self.filtered_asset_files)
         self.current_page = 0
         self.pagination.update_grid()
+
+    def filter_assets(self):
+        """Filter assets in the grid based on the search input when Search button is clicked."""
+        search_text = self.search_input.text().lower()
+        tag_text = self.tags_input.text().lower()
+
+        # Use the helper method to find matching assets based on search and tags
+        matching_assets = self.asset_helper.filter_assets(search_text, tag_text, self.all_asset_files)
+
+        self.filtered_asset_files = matching_assets
+
+        # Update the total number of assets and reset pagination
+        self.total_assets = len(self.filtered_asset_files)
+        self.current_page = 0
+        self.pagination.update_grid()    
 
     def update_completer(self):
         """Update the QCompleter with suggestions based on the search text."""
