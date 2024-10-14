@@ -1,6 +1,6 @@
 import os
-from PySide6.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QProgressBar, QPushButton, QLineEdit, QComboBox, QListWidget
-from PySide6.QtCore import QTimer
+from PySide6.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QProgressBar, QPushButton, QLineEdit, QComboBox, QCompleter
+from PySide6.QtCore import QTimer, QStringListModel, Qt  # Add Qt for CaseInsensitive
 from file_view import FileView
 from asset_grid import AssetGrid
 from pagination import Pagination
@@ -77,10 +77,11 @@ class AssetBrowser(QMainWindow):
         self.total_assets = 0
         self.pagination.update_grid()
 
-        # Autocomplete list for search suggestions
-        self.suggestion_list = QListWidget()
-        self.suggestion_list.setVisible(False)
-        main_layout.addWidget(self.suggestion_list)
+        # Create a completer for the search input field
+        self.completer_model = QStringListModel()  # To store the autocomplete suggestions
+        self.completer = QCompleter(self.completer_model)
+        self.completer.setCaseSensitivity(Qt.CaseInsensitive)  # Make it case insensitive
+        self.search_input.setCompleter(self.completer)
 
     def create_search_layout(self):
         """Creates the search and filter layout with search, exclude, and dropdowns."""
@@ -89,7 +90,7 @@ class AssetBrowser(QMainWindow):
         # Search input
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("Search")
-        self.search_input.textChanged.connect(self.show_suggestions)  # Show suggestions on typing
+        self.search_input.textChanged.connect(self.update_completer)  # Update completer on typing
         search_layout.addWidget(self.search_input)
 
         # Exclude input
@@ -206,22 +207,16 @@ class AssetBrowser(QMainWindow):
         self.current_page = 0
         self.pagination.update_grid()
 
-    def show_suggestions(self):
-        """Show top 12 suggestions in a drop-down list as the user types in the search field."""
+    def update_completer(self):
+        """Update the QCompleter with suggestions based on the search text."""
         search_text = self.search_input.text().lower()
 
         if search_text == "":
-            self.suggestion_list.clear()
-            self.suggestion_list.setVisible(False)
+            self.completer_model.setStringList([])  # Clear suggestions if no input
             return
 
         # Get suggestions from the Trie
         suggestions = self.trie.search(search_text)
 
-        # Show the top 12 suggestions
-        self.suggestion_list.clear()
-        for suggestion in suggestions[:12]:
-            self.suggestion_list.addItem(suggestion)
-
-        # Show the suggestion list
-        self.suggestion_list.setVisible(True)
+        # Set the top 12 suggestions for the completer
+        self.completer_model.setStringList(suggestions[:12])
