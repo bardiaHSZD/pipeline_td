@@ -1,5 +1,6 @@
 import os
 import json
+from json_processor import load_json_metadata
 
 class AssetHelper:
     def __init__(self):
@@ -12,7 +13,17 @@ class AssetHelper:
             for root, _, files in os.walk(folder_path):
                 for file in files:
                     if file.lower().endswith(('.png', '.jpg', '.jpeg')):
-                        asset_files.append(os.path.join(root, file))
+                        asset_file_path = os.path.join(root, file)
+                        asset_files.append(asset_file_path)
+
+                        # Extract tags and store them in a local file
+                        json_file_path = f"{os.path.splitext(asset_file_path)[0]}versioninfo.json"
+                        _, _, hashtags = load_json_metadata(json_file_path)
+                        self.asset_tags[asset_file_path] = hashtags  # Store hashtags
+
+        # Optionally, save hashtags to a local file for persistent storage
+        with open("asset_tags.json", "w") as f:
+            json.dump(self.asset_tags, f)
 
         return asset_files
 
@@ -22,31 +33,21 @@ class AssetHelper:
         for asset_file in asset_files:
             json_file_path = f"{os.path.splitext(asset_file)[0]}versioninfo.json"
             if os.path.exists(json_file_path):
-                with open(json_file_path, 'r') as json_file:
-                    data = json.load(json_file)
-                    tags = data.get("comment", "").split(",")  # Assuming tags are comma-separated
-                    self.asset_tags[asset_file] = [tag.strip().lower() for tag in tags]  # Store tags for the asset
+                _, _, hashtags = load_json_metadata(json_file_path)
+                self.asset_tags[asset_file] = hashtags  # Store hashtags for the asset
 
     def filter_assets(self, search_term, tag_term, asset_files):
         """Filter assets based on search term and tags."""
         search_term = search_term.lower()
-        tag_term = tag_term.lower()
+        tag_terms = [tag.strip().lower() for tag in tag_term.split(",")] if tag_term else []
         filtered_assets = []
 
         for asset in asset_files:
             asset_name = os.path.basename(asset).lower()
             tags = self.asset_tags.get(asset, [])
-            if search_term in asset_name or any(tag_term in tag for tag in tags):
+
+            # Check if both search term and all tags match
+            if (search_term in asset_name or not search_term) and all(tag in tags for tag in tag_terms):
                 filtered_assets.append(asset)
 
         return filtered_assets
-
-    def filter_assets_by_search(self, all_asset_files, search_text):
-        """Filter assets based on search input."""
-        search_text = search_text.lower()
-        matching_assets = []
-        for asset in all_asset_files:
-            asset_name = os.path.basename(asset).lower()
-            if asset_name.startswith(search_text):
-                matching_assets.append(asset)
-        return matching_assets

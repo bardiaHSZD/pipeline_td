@@ -180,25 +180,7 @@ class AssetBrowser(QMainWindow):
         self.selected_asset_file = asset_file  # Store the selected asset for sharing or opening
 
     def filter_assets(self):
-        """Filter assets in the grid based on the search input when Search button is clicked."""
-        search_text = self.search_input.text().lower()
-
-        if search_text == "":
-            # If the search text is empty, show all assets
-            self.filtered_asset_files = self.all_asset_files
-        else:
-            # Use the helper method to find matching assets
-            matching_assets = self.asset_helper.filter_assets_by_search(self.all_asset_files, search_text)
-
-            self.filtered_asset_files = matching_assets
-
-        # Update the total number of assets and reset pagination
-        self.total_assets = len(self.filtered_asset_files)
-        self.current_page = 0
-        self.pagination.update_grid()
-
-    def filter_assets(self):
-        """Filter assets in the grid based on the search input when Search button is clicked."""
+        """Filter assets in the grid based on the search input and tags when Search button is clicked."""
         search_text = self.search_input.text().lower()
         tag_text = self.tags_input.text().lower()
 
@@ -210,7 +192,7 @@ class AssetBrowser(QMainWindow):
         # Update the total number of assets and reset pagination
         self.total_assets = len(self.filtered_asset_files)
         self.current_page = 0
-        self.pagination.update_grid()    
+        self.pagination.update_grid()
 
     def update_completer(self):
         """Update the QCompleter with suggestions based on the search text."""

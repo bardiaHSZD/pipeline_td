@@ -3,3 +3,7 @@
 /prism_shot_folder_builder/build
 /prism_shot_folder_builder/venv
 /prism_shot_folder_builder/dist
+/AssetBrowser/env
+/AssetBrowser/src/__pycache__
+/AssetBrowser/venv
+/lin-env
