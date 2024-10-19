@@ -27,6 +27,51 @@ class AssetHelper:
 
         return asset_files
 
+    def filter_assets(self, search_term, tag_expression, asset_files):
+        """Filter assets based on search term and the parsed tag expression."""
+        search_term = search_term.lower()
+        filtered_assets = []
+
+        for asset in asset_files:
+            asset_name = os.path.basename(asset).lower()
+            asset_tags = self.asset_tags.get(asset, [])
+
+            # Check if the search term matches the asset name
+            search_match = search_term in asset_name or not search_term
+
+            # Check if the tags match according to the parsed expression
+            tags_match = self.evaluate_tag_expression(tag_expression, asset_tags)
+
+            # Add the asset to the results if both the search term and tag conditions are met
+            if search_match and tags_match:
+                filtered_assets.append(asset)
+
+        return filtered_assets
+
+    def evaluate_tag_expression(self, expression, asset_tags):
+        """Recursively evaluate the parsed tag expression against the asset tags."""
+        result = False
+        for operator, operands in expression:
+            if operator == 'AND':
+                # AND: All operands must match
+                sub_result = all(self.evaluate_operand(operand, asset_tags) for operand in operands)
+            elif operator == 'OR':
+                # OR: At least one operand must match
+                sub_result = any(self.evaluate_operand(operand, asset_tags) for operand in operands)
+
+            # Combine the result (AND/OR) based on the operator
+            result = sub_result if result is False else (result and sub_result if operator == 'AND' else result or sub_result)
+        return result
+
+    def evaluate_operand(self, operand, asset_tags):
+        """Evaluate a single operand (which could be a tag or a sub-expression)."""
+        if isinstance(operand, list):
+            # It's a sub-expression, so evaluate it recursively
+            return self.evaluate_tag_expression(operand, asset_tags)
+        else:
+            # It's a tag, so check if it's in the asset tags
+            return operand in asset_tags
+
     def update_tags(self, asset_files):
         """Update tags for the loaded assets based on their corresponding JSON files."""
         self.asset_tags.clear()  # Clear previous tags
@@ -35,19 +80,3 @@ class AssetHelper:
             if os.path.exists(json_file_path):
                 _, _, hashtags = load_json_metadata(json_file_path)
                 self.asset_tags[asset_file] = hashtags  # Store hashtags for the asset
-
-    def filter_assets(self, search_term, tag_term, asset_files):
-        """Filter assets based on search term and tags."""
-        search_term = search_term.lower()
-        tag_terms = [tag.strip().lower() for tag in tag_term.split(",")] if tag_term else []
-        filtered_assets = []
-
-        for asset in asset_files:
-            asset_name = os.path.basename(asset).lower()
-            tags = self.asset_tags.get(asset, [])
-
-            # Check if both search term and all tags match
-            if (search_term in asset_name or not search_term) and all(tag in tags for tag in tag_terms):
-                filtered_assets.append(asset)
-
-        return filtered_assets

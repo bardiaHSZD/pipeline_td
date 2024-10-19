@@ -7,6 +7,7 @@ from pagination import Pagination
 from preview_panel import PreviewPanel
 from trie import Trie
 from asset_helper import AssetHelper  # Import the helper module
+import re
 
 class AssetBrowser(QMainWindow):
     def __init__(self):
@@ -177,22 +178,7 @@ class AssetBrowser(QMainWindow):
     def show_asset_preview(self, asset_file):
         """Shows the selected asset in the preview section."""
         self.preview_panel.show_asset_preview(asset_file)
-        self.selected_asset_file = asset_file  # Store the selected asset for sharing or opening
-
-    def filter_assets(self):
-        """Filter assets in the grid based on the search input and tags when Search button is clicked."""
-        search_text = self.search_input.text().lower()
-        tag_text = self.tags_input.text().lower()
-
-        # Use the helper method to find matching assets based on search and tags
-        matching_assets = self.asset_helper.filter_assets(search_text, tag_text, self.all_asset_files)
-
-        self.filtered_asset_files = matching_assets
-
-        # Update the total number of assets and reset pagination
-        self.total_assets = len(self.filtered_asset_files)
-        self.current_page = 0
-        self.pagination.update_grid()
+        self.selected_asset_file = asset_file  # Store the selected asset for sharing or opening   
 
     def update_completer(self):
         """Update the QCompleter with suggestions based on the search text."""
@@ -208,3 +194,68 @@ class AssetBrowser(QMainWindow):
         # Set the top 12 suggestions for the completer, without file extensions
         suggestions = [os.path.splitext(suggestion)[0] for suggestion in suggestions]
         self.completer_model.setStringList(suggestions[:12])
+
+
+    def filter_assets(self):
+        """Filter assets in the grid based on the search input and tags when the Search button is clicked."""
+        search_text = self.search_input.text().lower()
+        tag_text = self.tags_input.text().lower()
+
+        # Parse the tag text for AND/OR operations with brackets
+        tag_expression = self.parse_tag_text(tag_text)
+
+        # Use the helper method to find matching assets based on search and parsed tag expression
+        matching_assets = self.asset_helper.filter_assets(search_text, tag_expression, self.all_asset_files)
+
+        self.filtered_asset_files = matching_assets
+
+        # Update the total number of assets and reset pagination
+        self.total_assets = len(self.filtered_asset_files)
+        self.current_page = 0
+        self.pagination.update_grid()
+
+    def parse_tag_text(self, tag_text):
+        """Parse the tag text input and return a structure that supports complex AND/OR logic with brackets."""
+        if not tag_text:
+            return []
+
+        # Tokenize input with spaces, AND, OR, and brackets
+        tokens = re.findall(r'\(|\)|\band\b|\bor\b|#[\w_-]+', tag_text, re.IGNORECASE)
+
+        def parse_expression(index=0):
+            """Recursively parse the token list into a structured logical expression."""
+            result = []
+            current_group = []
+            current_op = None  # Keeps track of the current logical operation (AND/OR)
+
+            while index < len(tokens):
+                token = tokens[index].lower()
+
+                if token == '(':
+                    # Start a new group and recursively parse it
+                    sub_expression, index = parse_expression(index + 1)
+                    current_group.append(sub_expression)
+                elif token == ')':
+                    # End of a group, return it
+                    if current_group:
+                        result.append(('AND', current_group) if current_op == 'and' else ('OR', current_group))
+                    return result, index
+                elif token in ('and', 'or'):
+                    # Logical operator (AND/OR)
+                    if current_group:
+                        result.append(('AND', current_group) if current_op == 'and' else ('OR', current_group))
+                    current_op = token
+                    current_group = []
+                else:
+                    # It's a tag (e.g., #3D_asset)
+                    current_group.append(token)
+
+                index += 1
+
+            # Add the final group
+            if current_group:
+                result.append(('AND', current_group) if current_op == 'and' else ('OR', current_group))
+            return result, index
+
+        expression, _ = parse_expression()
+        return expression
