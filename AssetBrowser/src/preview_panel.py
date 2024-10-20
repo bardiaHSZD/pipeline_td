@@ -39,10 +39,10 @@ class PreviewPanel(QWidget):
 
         # Metadata fields
         self.metadata_label = QLabel("No asset selected")
-        self.version_label = QLabel("Version: N/A")
-        self.extension_label = QLabel("Extension: N/A")
-        self.department_label = QLabel("Department: N/A")  # Display department
-        self.task_label = QLabel("Task: N/A")  # Display task
+        self.version_label = QLabel("N/A")
+        self.extension_label = QLabel("N/A")
+        self.department_label = QLabel("N/A")  # Display department
+        self.task_label = QLabel("N/A")  # Display task
 
     def create_preview_layout(self):
         """Creates the preview layout with scroll and zoom support."""
