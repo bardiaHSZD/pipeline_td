@@ -5,20 +5,21 @@ from PySide6.QtWidgets import QVBoxLayout, QLabel, QFormLayout, QPushButton, QHB
 from PySide6.QtGui import QPixmap, QGuiApplication
 from PySide6.QtCore import Qt
 
-
 def load_json_metadata(json_file_path):
     """Load metadata from the specified JSON file."""
     if not os.path.exists(json_file_path):
-        return "N/A", "N/A"  # Return default values if the file does not exist
+        return {"version": "N/A", "extension": "N/A", "department": "N/A", "task": "N/A", "global_path": None}  # Return default values if the file does not exist
 
     with open(json_file_path, 'r') as json_file:
         data = json.load(json_file)
 
     version = data.get("version", "N/A")  # Get the version
-    global_path = data.get("locations", {}).get("global", "")
+    global_path = data.get("locations", {}).get("global", None)  # Get the file's global path if it exists
     extension = os.path.splitext(global_path)[1] if global_path else "N/A"  # Get the file extension from global path
+    department = data.get("department", "N/A")  # Get the department
+    task = data.get("task", "N/A")  # Get the task
 
-    return version, extension
+    return {"version": version, "extension": extension, "department": department, "task": task, "global_path": global_path}
 
 
 class PreviewPanel(QWidget):
@@ -39,7 +40,9 @@ class PreviewPanel(QWidget):
         # Metadata fields
         self.metadata_label = QLabel("No asset selected")
         self.version_label = QLabel("Version: N/A")
-        self.extension_label = QLabel("Extension: N/A")  # Added for displaying the extension
+        self.extension_label = QLabel("Extension: N/A")
+        self.department_label = QLabel("Department: N/A")  # Display department
+        self.task_label = QLabel("Task: N/A")  # Display task
 
     def create_preview_layout(self):
         """Creates the preview layout with scroll and zoom support."""
@@ -52,7 +55,9 @@ class PreviewPanel(QWidget):
         metadata_layout = QFormLayout()
         metadata_layout.addRow("Asset Name:", self.metadata_label)
         metadata_layout.addRow("Version:", self.version_label)
-        metadata_layout.addRow("Extension:", self.extension_label)  # Display extension
+        metadata_layout.addRow("Extension:", self.extension_label)
+        metadata_layout.addRow("Department:", self.department_label)  # Display department
+        metadata_layout.addRow("Task:", self.task_label)  # Display task
 
         preview_layout.addLayout(metadata_layout)
 
@@ -82,31 +87,16 @@ class PreviewPanel(QWidget):
 
         # Load metadata from the corresponding JSON file
         json_file_path = f"{os.path.splitext(asset_file)[0]}versioninfo.json"  # Construct the JSON file path
-        version, extension = load_json_metadata(json_file_path)  # Load version and extension
+        metadata = load_json_metadata(json_file_path)  # Load version, extension, department, task, and global_path
 
         # Set metadata
         asset_name = os.path.basename(asset_file)
         asset_name_without_extension = os.path.splitext(asset_name)[0]  # Remove the file extension
         self.metadata_label.setText(asset_name_without_extension)
-        self.version_label.setText(f"{version}")
-        self.extension_label.setText(f"{extension}")  # Display extension
-
-    def zoom_in(self):
-        """Zoom in the preview image."""
-        self.scale_factor *= 1.1  # Increase scale by 10%
-        self.update_preview_image()
-
-    def zoom_out(self):
-        """Zoom out the preview image."""
-        self.scale_factor /= 1.1  # Decrease scale by 10%
-        self.update_preview_image()
-
-    def update_preview_image(self):
-        """Update the preview image with the current scale factor."""
-        pixmap = self.preview_label.pixmap()
-        if pixmap:
-            scaled_pixmap = pixmap.scaled(self.scale_factor * pixmap.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            self.preview_label.setPixmap(scaled_pixmap)
+        self.version_label.setText(f"{metadata['version']}")
+        self.extension_label.setText(f"{metadata['extension']}")
+        self.department_label.setText(f"{metadata['department']}")  # Set department
+        self.task_label.setText(f"{metadata['task']}")  # Set task
 
     def share_asset(self):
         """Displays a window with the asset path and a copy to clipboard button."""
@@ -115,14 +105,23 @@ class PreviewPanel(QWidget):
             return
 
         full_path = os.path.abspath(self.parent.selected_asset_file)
+        json_file_path = f"{os.path.splitext(full_path)[0]}versioninfo.json"  # Corresponding JSON file path
+        metadata = load_json_metadata(json_file_path)
+
+        # If JSON exists and global path is available, use the global path, otherwise use the asset's folder
+        if metadata and metadata["global_path"]:
+            share_path = metadata["global_path"]
+        else:
+            # If no global path, use the folder path of the thumbnail
+            share_path = os.path.dirname(full_path)
 
         # Create a dialog window to show the path and allow copying
         dialog = QDialog(self.parent)
         dialog.setWindowTitle("Share Asset Path")
         dialog_layout = QVBoxLayout()
 
-        # Show the full path of the selected asset
-        path_label = QLabel(f"Full path:\n{full_path}")
+        # Show the full path of the asset or global path
+        path_label = QLabel(f"Full path:\n{share_path}")
         dialog_layout.addWidget(path_label)
 
         # Create the "Copy to Clipboard" and "OK" buttons
@@ -130,7 +129,7 @@ class PreviewPanel(QWidget):
 
         # Copy to Clipboard button
         copy_button = QPushButton("Copy to Clipboard")
-        copy_button.clicked.connect(lambda: self.copy_to_clipboard(full_path))
+        copy_button.clicked.connect(lambda: self.copy_to_clipboard(share_path))
         button_box.addButton(copy_button, QDialogButtonBox.ActionRole)
 
         # OK button to close the dialog

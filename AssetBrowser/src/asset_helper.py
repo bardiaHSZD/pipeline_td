@@ -12,7 +12,7 @@ class AssetHelper:
         for folder_path in folder_paths:
             for root, _, files in os.walk(folder_path):
                 for file in files:
-                    if file.lower().endswith(('.png', '.jpg', '.jpeg')):
+                    if file.lower().endswith(('.png', '.jpg', '.jpeg', '.max', '.fbx')):
                         asset_file_path = os.path.join(root, file)
                         asset_files.append(asset_file_path)
 
@@ -27,14 +27,19 @@ class AssetHelper:
 
         return asset_files
 
-    def filter_assets(self, search_term, tag_expression, asset_files):
-        """Filter assets based on search term and the parsed tag expression."""
+    def filter_assets(self, search_term, tag_expression, asset_files, selected_department, selected_task):
+        """Filter assets based on search term, tags, department, task, and the selected operation."""
         search_term = search_term.lower()
         filtered_assets = []
 
         for asset in asset_files:
             asset_name = os.path.basename(asset).lower()
             asset_tags = self.asset_tags.get(asset, [])
+            asset_metadata = self.load_json_metadata(asset)  # Load metadata from associated JSON file
+
+            # Get department and task safely, default to empty string if not found
+            department = asset_metadata.get('department', '').lower().strip()
+            task = asset_metadata.get('task', '').lower().strip()
 
             # Check if the search term matches the asset name
             search_match = search_term in asset_name or not search_term
@@ -42,11 +47,20 @@ class AssetHelper:
             # Check if the tags match according to the parsed expression
             tags_match = self.evaluate_tag_expression(tag_expression, asset_tags)
 
-            # Add the asset to the results if both the search term and tag conditions are met
-            if search_match and tags_match:
+            # Check if department and task match, if "All" is selected, allow all departments/tasks
+            department_match = (selected_department == "All" or department == selected_department.lower().strip())
+            task_match = (selected_task == "All" or task == selected_task.lower().strip())
+
+            # Debugging for department and task matches
+            print(f"Asset: {asset_name}, Department: {department}, Task: {task}, Department Match: {department_match}, Task Match: {task_match}")
+
+            # Simplified logic: only filter by search, department, and task for now (ignore tags temporarily)
+            if search_match and tags_match and department_match and task_match:
                 filtered_assets.append(asset)
+                print(f"Asset added: {asset_name}")  # Debugging: Log added assets
 
         return filtered_assets
+
 
     def evaluate_tag_expression(self, expression, asset_tags):
         """Recursively evaluate the parsed tag expression against the asset tags."""
@@ -71,6 +85,14 @@ class AssetHelper:
         else:
             # It's a tag, so check if it's in the asset tags
             return operand in asset_tags
+
+    def load_json_metadata(self, asset_file):
+        """Load metadata from the associated JSON file."""
+        json_file_path = f"{os.path.splitext(asset_file)[0]}versioninfo.json"
+        if os.path.exists(json_file_path):
+            with open(json_file_path, 'r') as json_file:
+                return json.load(json_file)
+        return {}
 
     def update_tags(self, asset_files):
         """Update tags for the loaded assets based on their corresponding JSON files."""
