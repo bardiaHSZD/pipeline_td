@@ -45,7 +45,7 @@ class AssetHelper:
             search_match = search_term in asset_name or not search_term
 
             # Check if the tags match according to the parsed expression
-            tags_match = self.evaluate_tag_expression(tag_expression, asset_tags)
+            tags_match = self.evaluate_tag_expression(tag_expression, asset_tags) or not tag_expression
 
             # Check if department and task match, if "All" is selected, allow all departments/tasks
             department_match = (selected_department == "All" or department == selected_department.lower().strip())
